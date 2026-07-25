@@ -1,3 +1,4 @@
+// routes/resultados.tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
 import { Footer, Header } from "@/components/voting/Header";
@@ -17,7 +18,7 @@ function ResultsPage() {
 
   if (!SHOW_LIVE_RESULTS) {
     return (
-      <div className="flex min-h-screen flex-col bg-gradient-to-b from-secondary/40 via-background to-background">
+      <div className="voting-shell flex min-h-screen flex-col">
         <Header />
         <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-4 py-16 text-center">
           <h1 className="text-xl font-bold text-foreground">Resultados no disponibles</h1>
@@ -34,7 +35,7 @@ function ResultsPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-gradient-to-b from-secondary/40 via-background to-background">
+    <div className="voting-shell flex min-h-screen flex-col">
       <Header />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
         <div className="flex items-center justify-between gap-4">

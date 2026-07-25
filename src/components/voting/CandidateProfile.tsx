@@ -1,3 +1,4 @@
+// components/voting/CandidateProfile.tsx
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft, Lock, Vote, Volume2, VolumeX } from "lucide-react";
@@ -83,9 +84,8 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
           aria-modal="true"
           aria-label={`Perfil de ${candidate.nombre}`}
         >
-          {/* HERO — protagonista absoluto: casi todo el ancho, casi todo el
-              alto visible al entrar. clamp()/vh en vez de alturas fijas. */}
-          <div className="relative h-[62vh] min-h-[420px] w-full shrink-0 overflow-hidden rounded-b-[2rem] sm:h-[74vh] sm:rounded-b-[2.75rem]">
+          {/* HERO */}
+          <div className="relative h-[46vh] min-h-[300px] w-full shrink-0 overflow-hidden rounded-b-[2rem] sm:h-[58vh] sm:min-h-[420px] sm:rounded-b-[2.75rem]">
             <motion.div layoutId={`candidate-photo-${candidate.id}`} className="absolute inset-0">
               {hasDirectVideo ? (
                 <AdaptiveMedia
@@ -146,14 +146,14 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
             </div>
 
             {!hasDriveVideo && (
-              <div className="absolute inset-x-0 bottom-0 px-6 pb-8 sm:px-10 sm:pb-12">
+              <div className="absolute inset-x-0 bottom-0 px-6 pb-6 sm:px-10 sm:pb-10">
                 <p
                   className="text-xs font-semibold uppercase tracking-widest"
                   style={{ color: accent }}
                 >
                   {candidate.dependencia}
                 </p>
-                <h1 className="mt-2 text-[clamp(1.75rem,5vw,3.25rem)] font-bold leading-[1.05] text-white">
+                <h1 className="mt-2 text-[clamp(1.5rem,4.5vw,2.75rem)] font-bold leading-[1.05] text-white">
                   {candidate.nombre}
                 </h1>
                 <p className="mt-1 text-base text-white/70 sm:text-lg">{candidate.cargo}</p>
@@ -166,38 +166,38 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
               <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: accent }}>
                 {candidate.dependencia}
               </p>
-              <h1 className="mt-1 text-3xl font-bold text-white sm:text-4xl">{candidate.nombre}</h1>
-              <p className="mt-1 text-base text-white/70">{candidate.cargo}</p>
+              <h1 className="mt-1 text-3xl font-bold text-foreground sm:text-4xl">{candidate.nombre}</h1>
+              <p className="mt-1 text-base text-muted-foreground">{candidate.cargo}</p>
             </div>
           )}
 
-          {/* Transición hero → contenido: resplandor ambiental tintado con el
-              color del candidato. Solo esta franja hace scroll; el hero, el
-              botón Volver y la barra de voto siempre quedan fijos. */}
-          <div className="relative min-h-0 flex-1 overflow-y-auto">
+          <div
+            className="relative min-h-0 flex-1 overflow-y-auto"
+            style={{ overscrollBehavior: "contain", WebkitOverflowScrolling: "touch" }}
+          >
             <div
-              className="pointer-events-none absolute inset-x-0 top-0 h-40 opacity-70"
-              style={{ background: `radial-gradient(60% 100% at 50% 0%, ${accent}26 0%, transparent 70%)` }}
+              className="pointer-events-none absolute inset-x-0 top-0 h-32 opacity-60"
+              style={{ background: `radial-gradient(60% 100% at 50% 0%, ${accent}14 0%, transparent 70%)` }}
             />
-            <div className="relative mx-auto max-w-3xl px-6 py-10 sm:px-10">
+            <div className="relative mx-auto max-w-3xl px-6 pb-32 pt-8 sm:px-10 sm:pb-36 sm:pt-10">
               {candidate.descripcion && (
-                <p className="text-[1.05rem] leading-relaxed text-white/90">{candidate.descripcion}</p>
+                <p className="text-[1.05rem] leading-relaxed text-foreground">{candidate.descripcion}</p>
               )}
 
               {candidate.propuesta && (
-                <section className="mt-10">
+                <section className="mt-8">
                   <h2
                     className="text-xs font-semibold uppercase tracking-[0.14em]"
                     style={{ color: accent }}
                   >
                     Propuesta
                   </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-white/85">{candidate.propuesta}</p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{candidate.propuesta}</p>
                 </section>
               )}
 
               {candidate.trayectoria && candidate.trayectoria.length > 0 && (
-                <section className="mt-10">
+                <section className="mt-8">
                   <h2
                     className="text-xs font-semibold uppercase tracking-[0.14em]"
                     style={{ color: accent }}
@@ -206,7 +206,7 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
                   </h2>
                   <ul className="mt-3 space-y-3">
                     {candidate.trayectoria.map((item, i) => (
-                      <li key={i} className="flex gap-3 text-sm leading-relaxed text-white/85">
+                      <li key={i} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
                         <span
                           className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
                           style={{ backgroundColor: accent }}
@@ -219,7 +219,7 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
               )}
 
               {candidate.reconocimientos && candidate.reconocimientos.length > 0 && (
-                <section className="mt-10">
+                <section className="mt-8">
                   <h2
                     className="text-xs font-semibold uppercase tracking-[0.14em]"
                     style={{ color: accent }}
@@ -228,7 +228,7 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
                   </h2>
                   <ul className="mt-3 space-y-3">
                     {candidate.reconocimientos.map((item, i) => (
-                      <li key={i} className="flex gap-3 text-sm leading-relaxed text-white/85">
+                      <li key={i} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
                         <span
                           className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
                           style={{ backgroundColor: accent }}
@@ -241,36 +241,52 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
               )}
 
               {!hasBody && (
-                <p className="text-sm text-white/60">
+                <p className="text-sm text-muted-foreground">
                   Este candidato aún no tiene una biografía registrada.
                 </p>
               )}
             </div>
           </div>
 
-          <div className="shrink-0 border-t border-white/10 bg-black/40 p-4 backdrop-blur-md sm:p-5">
-            <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
-              {votingOpen ? (
-                <>
-                  <p className="hidden text-sm text-white/70 sm:block">
-                    Votando por <span className="font-semibold text-white">{candidate.nombre}</span>
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => setVoteOpen(true)}
-                    className="ml-auto flex h-12 items-center justify-center gap-2 rounded-full px-8 text-sm font-semibold text-white shadow-lg transition hover:brightness-105"
-                    style={{ backgroundColor: accent }}
-                  >
-                    <Vote className="h-4 w-4" /> Votar por este candidato
-                  </button>
-                </>
-              ) : (
-                <span className="mx-auto flex h-12 items-center justify-center gap-2 rounded-full border border-white/15 bg-white/5 px-8 text-sm font-medium text-white/70">
-                  <Lock className="h-4 w-4" />
-                  {closedMessage}
-                </span>
-              )}
-            </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-5 z-30 flex justify-center px-4 sm:bottom-7">
+            {votingOpen ? (
+              <motion.button
+                type="button"
+                onClick={(e) => {
+                  // Suelta el foco antes de que Radix marque este árbol como
+                  // aria-hidden al abrir el diálogo — evita el warning de
+                  // accesibilidad de foco retenido en elemento oculto.
+                  e.currentTarget.blur();
+                  setVoteOpen(true);
+                }}
+                initial={{ y: 24, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
+                className="pointer-events-auto relative flex items-center gap-2.5 py-3.5 pl-6 pr-7 text-sm font-semibold text-white shadow-[0_18px_40px_-12px_rgba(0,0,0,0.45)] backdrop-blur-md transition hover:brightness-105 active:scale-[0.98]"
+                style={{
+                  backgroundColor: `${accent}F2`,
+                  WebkitMaskImage: `url("data:image/svg+xml,${encodeURIComponent(
+                    ticketMaskSvg
+                  )}")`,
+                  maskImage: `url("data:image/svg+xml,${encodeURIComponent(ticketMaskSvg)}")`,
+                  WebkitMaskSize: "100% 100%",
+                  maskSize: "100% 100%",
+                }}
+              >
+                <Vote className="h-4 w-4 shrink-0" />
+                <span className="whitespace-nowrap">Votar por {candidate.nombre.split(" ")[0]}</span>
+              </motion.button>
+            ) : (
+              <motion.span
+                initial={{ y: 24, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
+                className="pointer-events-auto relative flex items-center gap-2 rounded-full border border-border bg-background/90 px-6 py-3 text-sm font-medium text-muted-foreground shadow-[0_14px_32px_-14px_rgba(0,0,0,0.35)] backdrop-blur-md"
+              >
+                <Lock className="h-4 w-4 shrink-0" />
+                {closedMessage}
+              </motion.span>
+            )}
           </div>
 
           <VoteFlowDialog
@@ -288,3 +304,24 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
     </AnimatePresence>
   );
 }
+
+const ticketMaskSvg = `
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+  <path d="
+    M 8,0
+    H 92
+    A 8,8 0 0 1 100,8
+    V 42
+    A 6,6 0 0 0 100,58
+    V 92
+    A 8,8 0 0 1 92,100
+    H 8
+    A 8,8 0 0 1 0,92
+    V 58
+    A 6,6 0 0 0 0,42
+    V 8
+    A 8,8 0 0 1 8,0
+    Z
+  " fill="white" />
+</svg>
+`.trim();

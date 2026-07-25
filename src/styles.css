@@ -1,22 +1,9 @@
+/* globals.css */
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
-
-/*
- * Design system definition.
- *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
- *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -175,16 +162,35 @@
   box-shadow: var(--shadow-card);
 }
 
+/*
+ * Fondo cinematográfico: una "cinta" clara y neutra que recorre el fondo,
+ * como un backdrop de estudio fotográfico. Banda ligeramente más oscura a
+ * la altura media (donde flota el carrusel), con viñeta suave hacia los
+ * bordes y un realce central tipo spotlight. Nada de azules pesados.
+ */
 @utility voting-shell {
-  background-color: oklch(0.16 0.05 260);
+  background-color: oklch(0.975 0.003 250);
   background-image:
-    radial-gradient(45% 40% at 12% 0%, oklch(0.6 0.14 235 / 0.35) 0%, transparent 70%),
-    radial-gradient(50% 45% at 100% 10%, oklch(0.63 0.16 145 / 0.28) 0%, transparent 70%),
-    var(--gradient-hero);
+    radial-gradient(60% 55% at 50% 50%, oklch(1 0 0 / 1) 0%, transparent 72%),
+    linear-gradient(
+      180deg,
+      oklch(0.975 0.003 250) 0%,
+      oklch(0.95 0.007 254) 28%,
+      oklch(0.905 0.012 256) 50%,
+      oklch(0.95 0.007 254) 72%,
+      oklch(0.975 0.003 250) 100%
+    ),
+    radial-gradient(120% 70% at 0% 50%, oklch(0 0 0 / 0.05) 0%, transparent 60%),
+    radial-gradient(120% 70% at 100% 50%, oklch(0 0 0 / 0.05) 0%, transparent 60%);
 }
 
+/*
+ * Chip flotante oscuro: funciona sobre cualquier fondo (claro u oscuro)
+ * porque siempre aporta su propio contraste — usado en la navegación y
+ * los controles del carrusel.
+ */
 @utility glass-pill {
-  background: oklch(1 0 0 / 0.06);
+  background: oklch(0.18 0.04 260 / 0.55);
   border: 1px solid oklch(1 0 0 / 0.12);
   backdrop-filter: blur(16px);
 }

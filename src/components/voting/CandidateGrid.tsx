@@ -1,3 +1,4 @@
+// components/voting/CandidateGrid.tsx
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
@@ -14,7 +15,6 @@ interface Props {
 
 const FALLBACK_COLOR = "var(--accent)";
 
-/** Distancia circular más corta entre dos posiciones — permite el loop infinito. */
 function circularOffset(from: number, to: number, n: number): number {
   let diff = (to - from) % n;
   if (diff > n / 2) diff -= n;
@@ -33,10 +33,22 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
   const next = () => goTo(centerIndex + 1);
 
   return (
-    <div className="flex h-full min-h-0 flex-col items-center justify-center">
+    <div className="flex h-full min-h-0 flex-col items-center justify-center gap-4">
+      {/*
+        Antes: height: clamp(380px, 68vw, 460px) — usaba VW (ancho), que no
+        tiene relación con cuánta altura real hay disponible en pantallas
+        altas y angostas (móviles). El piso de 380px además era demasiado
+        alto para viewports bajos, provocando que la tarjeta (aspect 3/4,
+        centrada con position:absolute) se renderizara más alta que su caja
+        y se montara visualmente sobre el texto de arriba.
+
+        Ahora: se usa DVH (alto real disponible) con un piso más bajo y un
+        techo razonable, así el carrusel siempre cabe en el espacio real
+        que le da su contenedor flex, sin importar el ancho del teléfono.
+      */}
       <div
         className="relative mx-auto w-full max-w-5xl"
-        style={{ height: "clamp(380px, 68vw, 460px)" }}
+        style={{ height: "clamp(240px, 44dvh, 460px)" }}
       >
         <button
           type="button"
@@ -59,7 +71,6 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
               offset={offset}
               isCenter={isCenter}
               visible={visible}
-              onFocus={() => goTo(i)}
               onOpen={() => (isCenter ? setOpenId(candidate.id) : goTo(i))}
             />
           );
@@ -75,8 +86,7 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
         </button>
       </div>
 
-      {/* Controles + indicador de posición, siempre visibles (también útil en desktop) */}
-      <div className="mt-6 flex items-center gap-2">
+      <div className="flex shrink-0 items-center gap-2">
         <button
           type="button"
           onClick={prev}
@@ -94,7 +104,7 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
             className="h-2 rounded-full transition-all"
             style={{
               width: i === centerIndex ? "1.5rem" : "0.5rem",
-              backgroundColor: i === centerIndex ? (c.color ?? FALLBACK_COLOR) : "rgba(255,255,255,0.3)",
+              backgroundColor: i === centerIndex ? (c.color ?? FALLBACK_COLOR) : "rgba(15, 23, 42, 0.15)",
             }}
           />
         ))}
@@ -124,14 +134,12 @@ function CarouselCard({
   offset,
   isCenter,
   visible,
-  onFocus,
   onOpen,
 }: {
   candidate: Candidate;
   offset: number;
   isCenter: boolean;
   visible: boolean;
-  onFocus: () => void;
   onOpen: () => void;
 }) {
   const accent = candidate.color ?? FALLBACK_COLOR;
@@ -140,7 +148,6 @@ function CarouselCard({
     <motion.button
       type="button"
       onClick={onOpen}
-      onMouseEnter={!isCenter ? onFocus : undefined}
       initial={false}
       animate={{
         x: `calc(-50% + ${offset * 78}%)`,
@@ -154,38 +161,44 @@ function CarouselCard({
       aria-label={isCenter ? `Ver perfil de ${candidate.nombre}` : `Centrar en ${candidate.nombre}`}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
-      className="absolute left-1/2 top-1/2 w-[68vw] max-w-[280px] text-left focus-visible:outline-none sm:w-[300px]"
+      className="absolute left-1/2 top-1/2 h-full text-left focus-visible:outline-none"
     >
-      <div className="aspect-[3/4] w-full overflow-hidden rounded-[2rem] border border-white/10 bg-secondary shadow-[0_30px_70px_-20px_rgba(0,0,0,0.65)]">
-        <div className="relative h-full w-full">
-          <img
-            src={candidate.foto}
-            alt={`Fotografía de ${candidate.nombre}`}
-            className="h-full w-full object-cover object-top"
-            loading="lazy"
-          />
-          <div
-            className="pointer-events-none absolute inset-0"
-            style={{ background: `linear-gradient(to top, ${accent}F0 0%, ${accent}33 42%, transparent 72%)` }}
-          />
-          <div className="absolute inset-x-0 bottom-0 flex flex-col p-4 text-white sm:p-5">
-            <p className="truncate text-[10px] font-semibold uppercase tracking-widest text-white/75">
-              {candidate.dependencia}
-            </p>
-            <h3 className="mt-1.5 line-clamp-2 min-h-[2.75rem] text-lg font-bold leading-tight sm:min-h-[3.125rem] sm:text-xl">
-              {candidate.nombre}
-            </h3>
-            <p className="mt-1 truncate text-sm text-white/85">{candidate.cargo}</p>
-            {isCenter && (
-              <span
-                className="mt-3 inline-flex w-fit items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold text-white shadow-lg backdrop-blur-sm"
-                style={{ backgroundColor: `${accent}CC` }}
-              >
-                <PlayCircle className="h-4 w-4" />
-                Ver perfil
-              </span>
-            )}
-          </div>
+      {/*
+        Antes: w-[68vw] max-w-[280px] con aspect-[3/4] → el ANCHO era
+        variable (según viewport) y la ALTURA se derivaba de ese ancho.
+        Eso es lo contrario de lo que necesitamos: ahora que el contenedor
+        tiene una altura fija y segura (arriba), la tarjeta debe medir
+        h-full y derivar su propio ANCHO desde esa altura con aspect-[3/4].
+        Así nunca puede desbordar verticalmente su caja.
+      */}
+      <div className="relative h-full aspect-[3/4] overflow-hidden rounded-[2rem] border border-black/5 bg-secondary shadow-[0_30px_70px_-20px_rgba(15,23,42,0.35)]">
+        <img
+          src={candidate.foto}
+          alt={`Fotografía de ${candidate.nombre}`}
+          className="h-full w-full object-cover object-top"
+          loading="lazy"
+        />
+        <div
+          className="pointer-events-none absolute inset-0"
+          style={{ background: `linear-gradient(to top, ${accent}F0 0%, ${accent}33 42%, transparent 72%)` }}
+        />
+        <div className="absolute inset-x-0 bottom-0 flex flex-col p-4 text-white sm:p-5">
+          <p className="truncate text-[10px] font-semibold uppercase tracking-widest text-white/75">
+            {candidate.dependencia}
+          </p>
+          <h3 className="mt-1.5 line-clamp-2 text-base font-bold leading-tight sm:text-lg">
+            {candidate.nombre}
+          </h3>
+          <p className="mt-1 truncate text-xs text-white/85 sm:text-sm">{candidate.cargo}</p>
+          {isCenter && (
+            <span
+              className="mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm sm:mt-3 sm:px-4 sm:py-2"
+              style={{ backgroundColor: `${accent}CC` }}
+            >
+              <PlayCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+              Ver perfil
+            </span>
+          )}
         </div>
       </div>
     </motion.button>

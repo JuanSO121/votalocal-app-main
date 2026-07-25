@@ -1,3 +1,4 @@
+// index.tsx (VotingPage) — solo cambia h-screen -> h-dvh
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Footer, Header } from "@/components/voting/Header";
@@ -58,7 +59,11 @@ function VotingPage() {
   };
 
   return (
-    <div className="voting-shell flex h-screen flex-col overflow-hidden">
+    // h-dvh en vez de h-screen: 100vh en móvil no descuenta la barra de
+    // direcciones del navegador y puede quedarse corto o largo según el
+    // dispositivo; dvh (dynamic viewport height) sí se ajusta en tiempo
+    // real a la ventana visible real.
+    <div className="voting-shell flex h-dvh flex-col overflow-hidden">
       <Header />
 
       <main
@@ -74,10 +79,10 @@ function VotingPage() {
               <div className="shrink-0 text-center sm:text-left">
                 <div className="flex flex-col items-center justify-between gap-3 sm:flex-row">
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-white/60">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
                       Secretaría General · Cultura Organizacional
                     </p>
-                    <h1 className="mt-1 text-[clamp(1.5rem,3.5vw,2.25rem)] font-bold text-white">
+                    <h1 className="mt-1 text-[clamp(1.5rem,3.5vw,2.25rem)] font-bold text-foreground">
                       Mejor Servidor Público
                     </h1>
                   </div>
@@ -88,7 +93,7 @@ function VotingPage() {
                     />
                   )}
                 </div>
-                <p className="mt-2 text-sm text-white/70">
+                <p className="mt-2 text-sm text-muted-foreground">
                   Toque una tarjeta para conocer al candidato{votingOpen ? " y votar" : ""}.
                 </p>
               </div>
@@ -108,4 +113,4 @@ function VotingPage() {
       <Footer />
     </div>
   );
-} 
+}

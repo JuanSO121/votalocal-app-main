@@ -1,35 +1,46 @@
+// components/voting/CountdownTimer.tsx
 import { useEffect, useState } from "react";
 import { getCountdown, type Countdown } from "@/lib/voting-window";
 
 interface Props {
-  /** Fecha objetivo hacia la que cuenta el reloj. */
   target: Date;
-  /** Texto corto mostrado antes del reloj, ej. "Inicia en" o "Cierra en". */
   label: string;
-  className?: string;
 }
 
-export function CountdownTimer({ target, label, className = "" }: Props) {
-  const [countdown, setCountdown] = useState<Countdown>(() => getCountdown(target));
+export function CountdownTimer({ target, label }: Props) {
+  // Clave: arranca en null. Así el HTML del servidor y el primer render
+  // del cliente (antes de montar) son IDÉNTICOS — ambos muestran el
+  // placeholder de abajo, sin ningún número calculado todavía.
+  const [countdown, setCountdown] = useState<Countdown | null>(null);
 
   useEffect(() => {
+    // Este código NUNCA corre en el servidor. Solo se ejecuta después de
+    // que React hidrata en el navegador, así que ya no hay nada que
+    // comparar contra el HTML del servidor.
     setCountdown(getCountdown(target));
-    const id = setInterval(() => setCountdown(getCountdown(target)), 1000);
-    return () => clearInterval(id);
+    const interval = setInterval(() => {
+      setCountdown(getCountdown(target));
+    }, 1000);
+    return () => clearInterval(interval);
   }, [target]);
 
-  if (countdown.done) return null;
+  if (!countdown) {
+    return (
+      <div className="glass-pill inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs text-white/80 sm:text-sm">
+        <span className="uppercase tracking-wide text-white/60">{label}</span>
+        <span className="font-mono tabular-nums">--:--:--:--</span>
+      </div>
+    );
+  }
 
-  const pad = (n: number) => n.toString().padStart(2, "0");
+  const { days, hours, minutes, seconds } = countdown;
+  const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
-    <div
-      className={`inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1.5 text-[11px] font-medium text-white/75 backdrop-blur-sm sm:text-xs ${className}`}
-    >
-      <span>{label}</span>
-      <span className="font-mono font-semibold text-white">
-        {countdown.days > 0 && `${countdown.days}d `}
-        {pad(countdown.hours)}:{pad(countdown.minutes)}:{pad(countdown.seconds)}
+    <div className="glass-pill inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs text-white/80 sm:text-sm">
+      <span className="uppercase tracking-wide text-white/60">{label}</span>
+      <span className="font-mono tabular-nums">
+        {pad(days)}:{pad(hours)}:{pad(minutes)}:{pad(seconds)}
       </span>
     </div>
   );

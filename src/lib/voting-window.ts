@@ -8,8 +8,16 @@
  * - Después de VOTING_END: se puede seguir consultando resultados, pero ya
  *   no se admiten nuevos votos (el perfil vuelve a modo solo lectura).
  */
-export const VOTING_START = new Date("2026-08-01T00:00:00-05:00");
-export const VOTING_END = new Date("2026-08-15T23:59:59-05:00");
+
+// Fecha y hora FIJAS de inicio. Edite este valor cuando necesite cambiar
+// la apertura de la votación — NUNCA use `new Date()` sin argumentos aquí,
+// porque el servidor (SSR) y el navegador evalúan este archivo en momentos
+// distintos, y eso rompe la hidratación de React (mismatch servidor/cliente).
+export const VOTING_START = new Date("2026-07-25T00:00:00-05:00");
+
+// Termina el 30 de este mes a las 23:59:59 — igualmente fijo en el momento
+// del build/deploy, no recalculado en cada render.
+export const VOTING_END = new Date("2026-07-30T23:59:59-05:00");
 
 export type VotingPhase = "before" | "open" | "closed";
 

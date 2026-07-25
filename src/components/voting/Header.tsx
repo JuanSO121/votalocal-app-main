@@ -1,4 +1,5 @@
-import logoAsset from "@/assets/logo-gobernacion.png.asset.json";
+// components/voting/Header.tsx
+import logoAsset from "@/assets/logo-gobernacion.png";
 import { Link, useRouterState } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { Trophy, Vote } from "lucide-react";
@@ -12,7 +13,7 @@ export function Header() {
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
         <div className="glass-pill flex shrink-0 items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3 shadow-elegant sm:pr-4">
           <img
-            src={logoAsset.url}
+            src={logoAsset}
             alt="Gobernación del Valle del Cauca"
             className="h-8 w-8 shrink-0 rounded-full bg-white/10 object-cover sm:h-9 sm:w-9"
             loading="eager"
@@ -67,7 +68,7 @@ function NavTab({
 
 export function Footer() {
   return (
-    <footer className="shrink-0 px-4 py-3 text-center text-xs text-white/50 sm:px-6">
+    <footer className="shrink-0 px-4 py-3 text-center text-xs text-muted-foreground sm:px-6">
       © {new Date().getFullYear()} Gobernación del Valle del Cauca · Secretaría General · Uso interno
     </footer>
   );

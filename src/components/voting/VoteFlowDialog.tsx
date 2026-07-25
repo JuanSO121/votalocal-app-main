@@ -1,3 +1,4 @@
+// components/voting/VoteFlowDialog.tsx
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -34,9 +35,7 @@ interface Props {
   candidate: Candidate | null;
   open: boolean;
   onOpenChange: (v: boolean) => void;
-  /** Envía el voto ya con la identidad validada. */
   onVoteSubmit: (candidate: Candidate, voter: VoterFormValues) => Promise<VoteResult>;
-  /** Se dispara solo cuando el voto quedó registrado — cierra perfil + modal. */
   onVoted: () => void;
 }
 
@@ -60,7 +59,7 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
   };
 
   const handleOpenChange = (next: boolean) => {
-    if (step === "submitting") return; // no se cierra mientras se envía
+    if (step === "submitting") return;
     if (!next) reset();
     onOpenChange(next);
   };
@@ -82,7 +81,19 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="max-w-md gap-0 overflow-hidden p-0">
+      {/*
+        IMPORTANTE: CandidateProfile es un overlay fixed con z-[100].
+        El Dialog de shadcn/Radix se monta en un Portal aparte con z-50 por
+        defecto, así que sin forzar un z-index mayor aquí, este modal queda
+        TAPADO detrás del perfil — se abre (el estado cambia) pero no se ve
+        ni se puede interactuar con él. El estilo inline siempre gana sobre
+        cualquier clase de Tailwind, así que es la forma más segura de
+        garantizar que quede por encima sin tocar ui/dialog.tsx.
+      */}
+      <DialogContent
+        className="max-w-md gap-0 overflow-hidden p-0"
+        style={{ zIndex: 200 }}
+      >
         <AnimatePresence mode="wait" initial={false}>
           {step === "confirm" ? (
             <motion.div
