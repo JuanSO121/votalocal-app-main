@@ -1,0 +1,128 @@
+/**
+ * Listado de candidatos al reconocimiento "Mejor Servidor Público".
+ *
+ * FOTOS Y VIDEOS
+ * ─────────────────────────────────────────────────────────────
+ * Los archivos viven en la carpeta `public/` del proyecto:
+ *   public/img/NombreArchivo.jpg      →  se referencia como "/img/NombreArchivo.jpg"
+ *   public/videos/NombreArchivo.mp4   →  se referencia como "/videos/NombreArchivo.mp4"
+ * Vite/TanStack Start sirve todo lo que está en `public/` directo desde la
+ * raíz del sitio, así que la ruta siempre empieza con "/" (sin "public").
+ */
+export interface Candidate {
+  id: string;
+  nombre: string;
+  cargo: string;
+  dependencia: string;
+  foto: string; // URL o ruta local bajo /public
+  /**
+   * URL o ruta del video de presentación.
+   * - Archivo .mp4/.webm/.ogg (local o remoto) → autoplay + loop + silenciado,
+   *   con el efecto de fondo desenfocado tipo Instagram.
+   * - Enlace de archivo de Google Drive → se muestra el visor de Drive
+   *   embebido (requiere clic, sin loop, sin efecto de fondo).
+   * - Cadena vacía "" → el candidato no tiene video (solo se muestra la foto).
+   */
+  video: string;
+  /** Descripción breve mostrada en el perfil expandido (perfil profesional). */
+  descripcion?: string;
+  /** Reseña ampliada de logros/méritos, mostrada en el perfil expandido. */
+  propuesta?: string;
+  /** Hitos de trayectoria, mostrados como lista en el perfil expandido. */
+  trayectoria?: string[];
+  /** Reconocimientos previos, mostrados como lista en el perfil expandido. */
+  reconocimientos?: string[];
+  /**
+   * Color representativo del candidato (hex), tomado de la paleta del
+   * abanico institucional ("paraíso de todos"). Si se omite, se usa el
+   * accent verde institucional por defecto.
+   */
+  color?: string;
+}
+
+/**
+ * Convierte un enlace `drive.google.com/open?id=` o `/file/d/ID/view` en una
+ * URL de imagen hotlinkeable. Ya no se usa para los candidatos actuales
+ * (ahora sirven sus fotos localmente desde /public/img), pero queda
+ * disponible por si un futuro candidato solo tiene su foto en Drive.
+ */
+const driveThumb = (fileId: string) => `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+void driveThumb; // evita advertencia de "no usado" mientras no haga falta
+
+/**
+ * Paleta tomada del abanico de colores del logo institucional
+ * ("paraíso de todos"). Quedan naranja, rojo, azul y morado disponibles
+ * para los próximos candidatos que se sumen a esta convocatoria.
+ */
+export const CANDIDATE_PALETTE = {
+  verde: "#2f8f4e",
+  teal: "#12958a",
+  dorado: "#e3b23c",
+  naranja: "#e07a35", // disponible
+  rojo: "#d1453b", // disponible
+  azul: "#1f6fb2", // disponible
+  morado: "#8a5fb0", // disponible
+} as const;
+
+export const candidates: Candidate[] = [
+  {
+    id: "SG-2026-01",
+    nombre: "Jhoan Sebastian Tabares Ospina",
+    cargo: "Profesional Universitario",
+    dependencia: "Participación Ciudadana y Rendición de Cuentas",
+    foto: "/img/Jhoan_Sebastian_Tabares.jpg",
+    video: "/videos/Jhoan_Sebastian_Tabares.mp4",
+    color: CANDIDATE_PALETTE.verde,
+    descripcion:
+      "Politólogo, especialista en Gerencia Social, con diplomados en enfoques diferenciales y métodos de resolución de conflictos, así como en construcción de paz territorial. Habla portugués como segunda lengua y se destaca por su liderazgo, respeto y amabilidad.",
+    propuesta:
+      "Destacó el Plan de Acción de la Política de Participación Ciudadana, con 23 dependencias y las 10 oficinas territoriales; acompañó a alcaldías y concejos municipales; avanzó los Nodos Territoriales de Rendición de Cuentas y logró un exitoso reporte de FURAG.",
+    trayectoria: [
+      "Desde su llegada a la Gobernación del Valle del Cauca ha trabajado en el equipo de Participación Ciudadana y Rendición de Cuentas de la Secretaría General.",
+      "Impulsó el avance del IDI de la política hasta llegar a 100.",
+      "Articuló relaciones con todas las dependencias para la compilación de información y evidencias de los Nodos Territoriales de Rendición de Cuentas.",
+    ],
+  },
+  {
+    id: "SG-2026-02",
+    nombre: "Arnol Cosme Aragón",
+    cargo: "Auxiliar Administrativo",
+    dependencia: "Atención al Ciudadano",
+    foto: "/img/Arnol-Cosme-Aragon.jpeg",
+    // Aún no hay un archivo de video individual para este candidato.
+    video: "",
+    color: CANDIDATE_PALETTE.teal,
+    descripcion:
+      "Administrador Público y Tecnólogo en Sistemas de Información, con experiencia en gestión pública, coordinación y seguimiento de proyectos financiados con recursos públicos, fortalecimiento institucional y articulación interinstitucional. Se destaca por su capacidad para gestionar procesos orientados al cumplimiento de metas institucionales y la generación de impacto social en los territorios.",
+    propuesta:
+      "Apoyó la gestión para la movilización de las felicitaciones registradas en el Módulo de Atención de la Secretaría General, fortaleciendo el reconocimiento a la calidad del servicio al ciudadano; acompañó la organización del módulo mediante la metodología 5S; e impulsó la creación del Semáforo de PQRSDF para el seguimiento oportuno de las peticiones.",
+    reconocimientos: [
+      "Premio de Buenas Prácticas de Buen Gobierno 2020 — Gobernación del Cauca",
+      "Mejor Servidor Público DAF — Presidencia 2021, Alcaldía Municipal",
+    ],
+  },
+  {
+    id: "SG-2026-03",
+    nombre: "Carlos Neiron Puentes Rojas",
+    cargo: "Líder de Programa",
+    dependencia: "Gestión Documental",
+    foto: "/img/Carlos_Neiron_Puentes_Rojas.jpeg",
+    video: "/videos/Carlos_Neiron_Puentes_Rojas.mp4",
+    color: CANDIDATE_PALETTE.dorado,
+    descripcion:
+      "Profesional en Ciencias de la Información y la Documentación, Bibliotecología, Archivística y Documentación de la Universidad del Quindío. Especialista en Sistemas de Información y Gerencia de Documentos de la Universidad de La Salle, y Máster en Archivística de la Universidad Carlos III de Madrid (España).",
+    propuesta:
+      "Encabeza la modernización de la gestión documental de la Gobernación, garantizando la conservación, valoración y accesibilidad de la memoria institucional del Valle del Cauca.",
+    trayectoria: [
+      "Líder del Programa de Gestión Documental en la Gobernación del Valle del Cauca.",
+      "Secretario Técnico del Consejo Departamental de Archivos del Valle del Cauca.",
+      "Representante de los Consejos Territoriales de Archivos ante el Consejo Directivo del Archivo General de la Nación (hasta marzo de 2026).",
+      "Integrante del comité técnico de gestión documental del Archivo General de la Nación.",
+      "Convalidación de la cuarta versión de las Tablas de Retención Documental; en proceso la quinta versión.",
+      "Convalidación de las Tablas de Valoración Documental de la Gobernación del Valle del Cauca.",
+      "Líder y supervisor del proyecto de implementación del Sistema de Gestión de Documentos Electrónicos de Archivo (SGDEA).",
+      "Reconocimiento del Archivo General de la Nación a su trayectoria archivística.",
+      "Desarrollo del proyecto de reconstrucción de expedientes, postulado como buena práctica archivística nacional ante el Archivo General de la Nación.",
+    ],
+  },
+];
