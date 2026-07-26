@@ -12,6 +12,13 @@ interface AdaptiveMediaProps {
   controls?: boolean;
   className?: string;
   darken?: boolean;
+  // Agregados para que CandidateProfile pueda sincronizar un ícono de
+  // play/pause con el estado real del <video> principal (el que tiene
+  // el ref) cuando se togglea por tap. Antes no existían en esta
+  // interfaz, así que se perdían silenciosamente al no hacer spread
+  // de props extra sobre el <video>.
+  onPlay?: () => void;
+  onPause?: () => void;
 }
 
 /**
@@ -23,7 +30,21 @@ interface AdaptiveMediaProps {
  */
 export const AdaptiveMedia = forwardRef<HTMLVideoElement, AdaptiveMediaProps>(
   (
-    { kind, src, poster, alt, autoPlay, loop, muted, playsInline, controls, className, darken = true },
+    {
+      kind,
+      src,
+      poster,
+      alt,
+      autoPlay,
+      loop,
+      muted,
+      playsInline,
+      controls,
+      className,
+      darken = true,
+      onPlay,
+      onPause,
+    },
     ref
   ) => {
     return (
@@ -61,6 +82,8 @@ export const AdaptiveMedia = forwardRef<HTMLVideoElement, AdaptiveMediaProps>(
             muted={muted}
             playsInline={playsInline}
             controls={controls}
+            onPlay={onPlay}
+            onPause={onPause}
             className="relative h-full w-full object-contain"
           />
         ) : (

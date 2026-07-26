@@ -26,11 +26,21 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
   const [centerIndex, setCenterIndex] = useState(0);
   const [openId, setOpenId] = useState<string | null>(null);
   const n = candidates.length;
-  const openCandidate = candidates.find((c) => c.id === openId) ?? null;
+  const openIndex = candidates.findIndex((c) => c.id === openId);
+  const openCandidate = openIndex >= 0 ? candidates[openIndex] : null;
 
   const goTo = (i: number) => setCenterIndex(((i % n) + n) % n);
   const prev = () => goTo(centerIndex - 1);
   const next = () => goTo(centerIndex + 1);
+
+  // Navega el perfil abierto sin cerrarlo. También sincroniza el carrusel
+  // de fondo (centerIndex) para que, si el usuario cierra el perfil, quede
+  // centrado en el mismo candidato que estaba viendo.
+  const goToOpen = (i: number) => {
+    const nextIndex = ((i % n) + n) % n;
+    setOpenId(candidates[nextIndex].id);
+    setCenterIndex(nextIndex);
+  };
 
   return (
     <div className="flex h-full min-h-0 flex-col items-center justify-center gap-4">
@@ -124,6 +134,8 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
         onVoteSubmit={onVoteSubmit}
         votingOpen={votingOpen}
         closedMessage={closedMessage}
+        onPrev={n > 1 ? () => goToOpen(openIndex - 1) : undefined}
+        onNext={n > 1 ? () => goToOpen(openIndex + 1) : undefined}
       />
     </div>
   );
