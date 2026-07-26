@@ -127,7 +127,7 @@ export function CandidateProfile({
     (candidate?.reconocimientos?.length ?? 0) > 0;
 
   const cargoConFecha = candidate
-    ? [candidate.cargo, candidate.fechaIngreso ? `Vinculado desde ${candidate.fechaIngreso}` : null]
+    ? [candidate.cargo, candidate.fechaIngreso ? `Fecha de Ingreso a la Gobernación ${candidate.fechaIngreso}` : null]
         .filter(Boolean)
         .join(" · ")
     : "";
