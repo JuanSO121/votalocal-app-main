@@ -18,6 +18,7 @@ interface Props {
 }
 
 const FALLBACK_COLOR = "var(--accent)";
+const PERIODO_DEFAULT = "enero – junio de 2026";
 
 function isDirectVideo(url: string) {
   return /\.(mp4|webm|ogg)(\?.*)?$/i.test(url);
@@ -67,9 +68,15 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
 
   const hasBody =
     !!candidate?.descripcion ||
-    !!candidate?.propuesta ||
+    (candidate?.aportes?.length ?? 0) > 0 ||
     (candidate?.trayectoria?.length ?? 0) > 0 ||
     (candidate?.reconocimientos?.length ?? 0) > 0;
+
+  const cargoConFecha = candidate
+    ? [candidate.cargo, candidate.fechaIngreso ? `Vinculado desde ${candidate.fechaIngreso}` : null]
+        .filter(Boolean)
+        .join(" · ")
+    : "";
 
   return (
     <AnimatePresence>
@@ -116,11 +123,21 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
               )}
             </motion.div>
 
+            {/*
+              Antes: el degradado de fondo dependía del color de acento del
+              candidato (`${accent}40`), que en tonos claros (dorado, teal)
+              no aporta suficiente contraste contra un video/foto brillante,
+              y el título quedaba casi ilegible. Ahora el degradado es negro
+              puro con paradas más altas y además el texto lleva su propia
+              sombra, así el título se lee sin importar qué tan clara sea la
+              escena del video de fondo.
+            */}
             {!hasDriveVideo && (
               <div
                 className="pointer-events-none absolute inset-0"
                 style={{
-                  background: `linear-gradient(to top, oklch(0.16 0.05 260) 0%, ${accent}40 30%, transparent 65%)`,
+                  background:
+                    "linear-gradient(to top, oklch(0 0 0 / 0.85) 0%, oklch(0 0 0 / 0.55) 32%, oklch(0 0 0 / 0.05) 68%, transparent 100%)",
                 }}
               />
             )}
@@ -148,15 +165,17 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
             {!hasDriveVideo && (
               <div className="absolute inset-x-0 bottom-0 px-6 pb-6 sm:px-10 sm:pb-10">
                 <p
-                  className="text-xs font-semibold uppercase tracking-widest"
+                  className="text-xs font-semibold uppercase tracking-widest drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
                   style={{ color: accent }}
                 >
                   {candidate.dependencia}
                 </p>
-                <h1 className="mt-2 text-[clamp(1.5rem,4.5vw,2.75rem)] font-bold leading-[1.05] text-white">
+                <h1 className="mt-2 text-[clamp(1.5rem,4.5vw,2.75rem)] font-bold leading-[1.05] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
                   {candidate.nombre}
                 </h1>
-                <p className="mt-1 text-base text-white/70 sm:text-lg">{candidate.cargo}</p>
+                <p className="mt-1 text-base text-white/90 drop-shadow-[0_1px_4px_rgba(0,0,0,0.85)] sm:text-lg">
+                  {cargoConFecha}
+                </p>
               </div>
             )}
           </div>
@@ -167,7 +186,7 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
                 {candidate.dependencia}
               </p>
               <h1 className="mt-1 text-3xl font-bold text-foreground sm:text-4xl">{candidate.nombre}</h1>
-              <p className="mt-1 text-base text-muted-foreground">{candidate.cargo}</p>
+              <p className="mt-1 text-base text-muted-foreground">{cargoConFecha}</p>
             </div>
           )}
 
@@ -181,18 +200,38 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
             />
             <div className="relative mx-auto max-w-3xl px-6 pb-32 pt-8 sm:px-10 sm:pb-36 sm:pt-10">
               {candidate.descripcion && (
-                <p className="text-[1.05rem] leading-relaxed text-foreground">{candidate.descripcion}</p>
+                <section>
+                  <h2
+                    className="text-xs font-semibold uppercase tracking-[0.14em]"
+                    style={{ color: accent }}
+                  >
+                    Perfil Profesional
+                  </h2>
+                  <p className="mt-3 text-[1.05rem] leading-relaxed text-foreground">
+                    {candidate.descripcion}
+                  </p>
+                </section>
               )}
 
-              {candidate.propuesta && (
+              {candidate.aportes && candidate.aportes.length > 0 && (
                 <section className="mt-8">
                   <h2
                     className="text-xs font-semibold uppercase tracking-[0.14em]"
                     style={{ color: accent }}
                   >
-                    Propuesta
+                    Aportes a la Cultura de la Organización ({candidate.periodoAportes ?? PERIODO_DEFAULT})
                   </h2>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{candidate.propuesta}</p>
+                  <ul className="mt-3 space-y-3">
+                    {candidate.aportes.map((item, i) => (
+                      <li key={i} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
+                        <span
+                          className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full"
+                          style={{ backgroundColor: accent }}
+                        />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
                 </section>
               )}
 
@@ -202,7 +241,7 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
                     className="text-xs font-semibold uppercase tracking-[0.14em]"
                     style={{ color: accent }}
                   >
-                    Trayectoria
+                    Trayectoria institucional
                   </h2>
                   <ul className="mt-3 space-y-3">
                     {candidate.trayectoria.map((item, i) => (
