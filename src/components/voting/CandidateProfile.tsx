@@ -164,12 +164,12 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
 
             {!hasDriveVideo && (
               <div className="absolute inset-x-0 bottom-0 px-6 pb-6 sm:px-10 sm:pb-10">
-                <p
-                  className="text-xs font-semibold uppercase tracking-widest drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]"
-                  style={{ color: accent }}
+                <span
+                  className="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest backdrop-blur-sm"
+                  style={{ color: accent, backgroundColor: "oklch(0 0 0 / 0.55)" }}
                 >
                   {candidate.dependencia}
-                </p>
+                </span>
                 <h1 className="mt-2 text-[clamp(1.5rem,4.5vw,2.75rem)] font-bold leading-[1.05] text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)]">
                   {candidate.nombre}
                 </h1>
@@ -182,9 +182,12 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
 
           {hasDriveVideo && (
             <div className="mx-auto w-full max-w-3xl shrink-0 px-6 pt-6 sm:px-10">
-              <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: accent }}>
+              <span
+                className="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest"
+                style={{ color: accent, backgroundColor: "var(--secondary)" }}
+              >
                 {candidate.dependencia}
-              </p>
+              </span>
               <h1 className="mt-1 text-3xl font-bold text-foreground sm:text-4xl">{candidate.nombre}</h1>
               <p className="mt-1 text-base text-muted-foreground">{cargoConFecha}</p>
             </div>

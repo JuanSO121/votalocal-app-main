@@ -190,15 +190,6 @@ function CarouselCard({
             {candidate.nombre}
           </h3>
           <p className="mt-1 truncate text-xs text-white/85 sm:text-sm">{candidate.cargo}</p>
-          {isCenter && (
-            <span
-              className="mt-2.5 inline-flex w-fit items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-sm sm:mt-3 sm:px-4 sm:py-2"
-              style={{ backgroundColor: `${accent}CC` }}
-            >
-              <PlayCircle className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-              Ver perfil
-            </span>
-          )}
         </div>
       </div>
     </motion.button>

@@ -75,7 +75,7 @@ export const candidates: Candidate[] = [
     id: "SG-2026-01",
     nombre: "Jhoan Sebastián Tabares Ospina",
     cargo: "Profesional Universitario",
-    fechaIngreso: "8/1/2025", // TODO: completar fecha de ingreso
+    fechaIngreso: "8 de enero de 2025",
     dependencia: "Participación Ciudadana y Rendición de Cuentas",
     foto: "/img/Jhoan_Sebastian_Tabares.jpg",
     video: "/videos/Jhoan_Sebastian_Tabares.mp4",
@@ -99,7 +99,7 @@ export const candidates: Candidate[] = [
     id: "SG-2026-02",
     nombre: "Arnol Cosme Aragón",
     cargo: "Auxiliar Administrativo",
-    fechaIngreso: "5/8/2025", // TODO: completar fecha de ingreso
+    fechaIngreso: "5 de agosto de 2025",
     dependencia: "Atención al Ciudadano",
     foto: "/img/Arnol-Cosme-Aragon.jpeg",
     // Aún no hay un archivo de video individual para este candidato.
@@ -124,29 +124,26 @@ export const candidates: Candidate[] = [
     id: "SG-2026-03",
     nombre: "Carlos Neirón Puentes Rojas",
     cargo: "Líder de Programa",
-    fechaIngreso: "1/6/2021", // TODO: completar fecha de ingreso
+    fechaIngreso: "1 de junio de 2021",
     dependencia: "Gestión Documental",
     foto: "/img/Carlos_Neiron_Puentes_Rojas.jpeg",
     video: "/videos/Carlos_Neiron_Puentes_Rojas.mp4",
     color: CANDIDATE_PALETTE.dorado,
     descripcion:
-      "Profesional en Ciencias de la Información y la Documentación, Bibliotecología, Archivística y Documentación de la Universidad del Quindío. Especialista en Sistemas de Información y Gerencia de Documentos de la Universidad de La Salle, y máster en Archivística de la Universidad Carlos III de Madrid (España).",
+      "Profesional en Ciencias de la Información y la Documentación, Bibliotecología, Archivística y Documentación de la Universidad del Quindío, con tarjeta profesional No. 754 del Ministerio de Educación Nacional y tarjeta profesional No. 168 del Colegio Colombiano de Archivistas. Cuenta con una sólida formación académica: es especialista en Sistemas de Información y Gerencia de Documentos de la Universidad de La Salle y máster en Archivística de la Universidad Carlos III de Madrid (España), título convalidado por el Ministerio de Educación Nacional mediante la Resolución No. 055 de enero de 2020.",
     periodoAportes: PERIODO_DEFAULT,
-    // TODO: reemplazar por los aportes textuales del periodo enero–junio de 2026
-    // tal como los redactó el candidato; se dejó temporalmente el texto anterior.
     aportes: [
-      "Encabeza la modernización de la gestión documental de la Gobernación, garantizando la conservación, valoración y accesibilidad de la memoria institucional del Valle del Cauca.",
+      "Convalidación de la cuarta versión de las Tablas de Retención Documental de la Gobernación del Valle del Cauca; actualmente en proceso la convalidación de la quinta versión.",
+      "Convalidación de las Tablas de Valoración Documental de la Gobernación del Valle del Cauca.",
+      "Participación, como líder y supervisor, en el proyecto de desarrollo e implementación del Sistema de Gestión de Documentos Electrónicos de Archivo (SGDEA) de la Gobernación del Valle del Cauca.",
+      "Reconocimiento por parte del Archivo General de la Nación a su trayectoria archivística.",
+      "Desarrollo del proyecto de reconstrucción de expedientes, que el Archivo General de la Nación busca vincular a su observatorio como buena práctica archivística de nivel nacional.",
     ],
     trayectoria: [
       "Líder del Programa de Gestión Documental en la Gobernación del Valle del Cauca.",
       "Secretario Técnico del Consejo Departamental de Archivos del Valle del Cauca.",
       "Representante de los Consejos Territoriales de Archivos ante el Consejo Directivo del Archivo General de la Nación (hasta marzo de 2026).",
       "Integrante del comité técnico de gestión documental del Archivo General de la Nación.",
-      "Convalidación de la cuarta versión de las Tablas de Retención Documental; en proceso la quinta versión.",
-      "Convalidación de las Tablas de Valoración Documental de la Gobernación del Valle del Cauca.",
-      "Líder y supervisor del proyecto de implementación del Sistema de Gestión de Documentos Electrónicos de Archivo (SGDEA).",
-      "Reconocimiento del Archivo General de la Nación a su trayectoria archivística.",
-      "Desarrollo del proyecto de reconstrucción de expedientes, postulado como buena práctica archivística nacional ante el Archivo General de la Nación.",
     ],
   },
 ];
