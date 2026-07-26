@@ -73,7 +73,7 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
     (candidate?.reconocimientos?.length ?? 0) > 0;
 
   const cargoConFecha = candidate
-    ? [candidate.cargo, candidate.fechaIngreso ? `Vinculado desde ${candidate.fechaIngreso}` : null]
+    ? [candidate.cargo, candidate.fechaIngreso ? `Fecha de Ingreso a la Gobernación ${candidate.fechaIngreso}` : null]
         .filter(Boolean)
         .join(" · ")
     : "";
@@ -165,8 +165,8 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
             {!hasDriveVideo && (
               <div className="absolute inset-x-0 bottom-0 px-6 pb-6 sm:px-10 sm:pb-10">
                 <span
-                  className="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest backdrop-blur-sm"
-                  style={{ color: accent, backgroundColor: "oklch(0.99 0.003 250 / 0.9)" }}
+                  className="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest text-white"
+                  style={{ backgroundColor: `${accent}E6` }}
                 >
                   {candidate.dependencia}
                 </span>
