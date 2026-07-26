@@ -166,7 +166,7 @@ export function CandidateProfile({ candidate, onClose, onVoteSubmit, votingOpen,
               <div className="absolute inset-x-0 bottom-0 px-6 pb-6 sm:px-10 sm:pb-10">
                 <span
                   className="inline-block rounded-full px-3 py-1 text-xs font-semibold uppercase tracking-widest backdrop-blur-sm"
-                  style={{ color: accent, backgroundColor: "oklch(0 0 0 / 0.55)" }}
+                  style={{ color: accent, backgroundColor: "oklch(0.99 0.003 250 / 0.9)" }}
                 >
                   {candidate.dependencia}
                 </span>
