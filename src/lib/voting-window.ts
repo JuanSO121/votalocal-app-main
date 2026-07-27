@@ -19,13 +19,16 @@ export const VOTING_START = new Date("2026-07-25T00:00:00-05:00");
 // del build/deploy, no recalculado en cada render.
 export const VOTING_END = new Date("2026-07-30T23:59:59-05:00");
 
-export type VotingPhase = "before" | "open" | "closed";
+export const RESULTS_REVEAL_DELAY_MINUTES = 1;
 
+export type VotingPhase = "before" | "open" | "closed";
+ 
 export function getVotingPhase(now: Date = new Date()): VotingPhase {
   if (now < VOTING_START) return "before";
   if (now > VOTING_END) return "closed";
   return "open";
 }
+
 
 export interface Countdown {
   days: number;
@@ -48,4 +51,13 @@ export function getCountdown(target: Date, now: Date = new Date()): Countdown {
     seconds: totalSeconds % 60,
     done: false,
   };
+}
+
+export const RESULTS_REVEAL_AT = new Date(
+  VOTING_END.getTime() + RESULTS_REVEAL_DELAY_MINUTES * 60 * 1000
+);
+ 
+/** true si ya pasó el tiempo de espera y el ganador puede mostrarse. */
+export function isResultsRevealed(now: Date = new Date()): boolean {
+  return now >= RESULTS_REVEAL_AT;
 }
