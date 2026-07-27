@@ -118,7 +118,7 @@ export const candidates: Candidate[] = [
     dependencia: "Atención al Ciudadano",
     foto: "/img/Arnol-Cosme-Aragon.jpeg",
     video: "/videos/Arnol-Cosme-Aragon.mp4",
-    color: CANDIDATE_PALETTE.naranja,
+    color: CANDIDATE_PALETTE.dorado,
     descripcion:
       "Administrador Público y Tecnólogo en Sistemas de Información, con experiencia en gestión pública, fortalecimiento institucional y articulación interinstitucional. Se destacó por su capacidad de gestión, organización de procesos y orientación al mejoramiento continuo del servicio al ciudadano.",
     periodoAportes: PERIODO_DEFAULT,
