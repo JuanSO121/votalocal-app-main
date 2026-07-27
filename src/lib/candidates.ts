@@ -117,8 +117,7 @@ export const candidates: Candidate[] = [
     fechaIngreso: "5 de agosto de 2025",
     dependencia: "Atención al Ciudadano",
     foto: "/img/Arnol-Cosme-Aragon.jpeg",
-    // Aún no hay un archivo de video individual para este candidato.
-    video: "",
+    video: "/videos/Arnol-Cosme-Aragon.mp4",
     color: CANDIDATE_PALETTE.naranja,
     descripcion:
       "Administrador Público y Tecnólogo en Sistemas de Información, con experiencia en gestión pública, fortalecimiento institucional y articulación interinstitucional. Se destacó por su capacidad de gestión, organización de procesos y orientación al mejoramiento continuo del servicio al ciudadano.",
