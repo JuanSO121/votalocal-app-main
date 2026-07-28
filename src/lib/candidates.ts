@@ -127,12 +127,12 @@ export const candidates: Candidate[] = [
       "Apoyó la gestión y movilización de las felicitaciones registradas en el Módulo de Atención de la Secretaría General, fortaleciendo el reconocimiento a la calidad del servicio al ciudadano.",
       "Acompañó la organización del Módulo de Atención mediante la implementación de la metodología 5S, contribuyendo al orden, la estandarización y optimización de los espacios de trabajo.",
       "Impulsó la creación del Semáforo de PQRSDF como herramienta para el seguimiento oportuno de peticiones, la toma de decisiones y la mejora continua del proceso.",
-      "Contribuyó al fortalecimiento de la eficiencia institucional y la orientación al ciudadano.",
+      
     ],
     trayectoria: [
       "Ha desarrollado actividades orientadas a la gestión administrativa, seguimiento de procesos y fortalecimiento de la atención al ciudadano.",
       "Cuenta con experiencia en acompañamiento técnico a proyectos y procesos institucionales enfocados en la generación de impacto social.",
-      "Recibió reconocimientos como el Premio de Buenas Prácticas de Buen Gobierno 2020 de la Gobernación del Cauca y Mejor Servidor Público DAF – Presidencia 2021 de la Alcaldía Municipal.",
+      "Contribuyó al fortalecimiento de la eficiencia institucional y la orientación al ciudadano.",
     ],
   },
   {
