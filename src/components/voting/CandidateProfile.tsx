@@ -104,7 +104,6 @@ export function CandidateProfile({
   }, [candidate, onClose, voteOpen, onPrev, onNext]);
 
   useEffect(() => {
-    setMuted(true);
     setVoteOpen(false);
     setVideoPaused(false);
   }, [candidate?.id]);

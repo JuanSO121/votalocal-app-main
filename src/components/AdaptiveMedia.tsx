@@ -51,17 +51,12 @@ export const AdaptiveMedia = forwardRef<HTMLVideoElement, AdaptiveMediaProps>(
       <div className={`relative h-full w-full overflow-hidden bg-black ${className ?? ""}`}>
         {/* Fondo difuminado — rellena, nunca es el contenido principal */}
         {kind === "video" ? (
-          <video
-            src={src}
-            poster={poster}
-            autoPlay
-            loop
-            muted
-            playsInline
-            aria-hidden="true"
-            tabIndex={-1}
-            className="pointer-events-none absolute inset-0 h-full w-full scale-110 object-cover blur-2xl"
-          />
+      <div
+          className="absolute inset-0 scale-110 bg-cover bg-center blur-2xl"
+          style={{
+              backgroundImage: `url(${poster ?? src})`
+          }}
+      />
         ) : (
           <div
             aria-hidden="true"
@@ -73,19 +68,20 @@ export const AdaptiveMedia = forwardRef<HTMLVideoElement, AdaptiveMediaProps>(
 
         {/* Contenido principal — completo, nunca recortado */}
         {kind === "video" ? (
-          <video
-            ref={ref}
-            src={src}
-            poster={poster}
-            autoPlay={autoPlay}
-            loop={loop}
-            muted={muted}
-            playsInline={playsInline}
-            controls={controls}
-            onPlay={onPlay}
-            onPause={onPause}
-            className="relative h-full w-full object-contain"
-          />
+        <video
+          ref={ref}
+          src={src}
+          poster={poster}
+          preload="metadata"
+          autoPlay={autoPlay}
+          loop={loop}
+          muted={muted}
+          playsInline={playsInline}
+          controls={controls}
+          onPlay={onPlay}
+          onPause={onPause}
+          className="relative h-full w-full object-contain"
+        />
         ) : (
           <img
             src={src}

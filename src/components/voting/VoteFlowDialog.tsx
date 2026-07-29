@@ -150,7 +150,7 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                 </div>
                 <DialogTitle className="text-center text-xl">Confirme su identidad</DialogTitle>
                 <DialogDescription className="text-center">
-                  Use su correo institucional y su cédula para registrar el voto por{" "}
+                  Use su correo registrado y su cédula para registrar el voto por{" "}
                   <span className="font-semibold text-foreground">{candidate.nombre}</span>.
                 </DialogDescription>
               </DialogHeader>
