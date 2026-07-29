@@ -162,4 +162,44 @@ export const candidates: Candidate[] = [
       "Integrante del comité técnico de gestión documental del Archivo General de la Nación.",
     ],
   },
+    {
+    id: "SG-2026-04",
+    nombre: "Leidy Lorena Torres Ramírez",
+    cargo: "Profesional Universitario",
+    fechaIngreso: "6 de mayo de 2025",
+    dependencia: "Atención al Ciudadano",
+    foto: "/img/Leidy_Lorena_Torres_Ramírez.jpeg",
+    video: "",
+    color: CANDIDATE_PALETTE.verde,
+    descripcion:
+      "Profesional en Estadística, con orientación a la gestión pública, comprometida con la generación de valor público, el fortalecimiento institucional y la mejora continua mediante la implementación de sistemas integrados de gestión.",
+    periodoAportes: PERIODO_DEFAULT,
+    variablesCultura: [
+      "Relación entre procesos",
+      "Estructura y sistemas",
+      "Servicio de entrega a clientes internos y externos",
+      "Planeación y decisión",
+    ],
+    aportes: [
+      "Gestionó las diferentes herramientas del proceso de Servicio al Ciudadano.",
+      "Desarrolló mesas de trabajo con los líderes de los procedimientos para estructurar el proceso estratégico «Gestión Estratégica de la Experiencia Ciudadana».",
+      "Brindó apoyo transversal a los procedimientos del área.",
+    ],
+    trayectoria: [
+      "Se vinculó a la Gobernación del Valle del Cauca el 6 de mayo de 2025 como Profesional Universitario.",
+      "Ha contribuido a la implementación de los requisitos del Sistema de Gestión de la Calidad en el proceso de Servicio al Ciudadano, liderado por la Subsecretaría Administrativa y de Relacionamiento con el Ciudadano.",
+      "Cuenta con un año de experiencia en el servicio público al interior de la entidad.",
+    ],
+  },
+  {
+  id: "SG-2026-VB",
+  nombre: "Voto en Blanco",
+  cargo: "Ningún candidato representa mi elección",
+  dependencia: "Opción de votación",
+  foto: "/img/voto-en-blanco.png",
+  video: "",
+  color: "#9CA3AF", // Gris neutro
+  descripcion:
+    "Seleccione esta opción si considera que ninguno de los candidatos representa su elección para el reconocimiento de Mejor Servidor Público.",
+}
 ];

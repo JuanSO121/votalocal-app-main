@@ -1,5 +1,5 @@
 // components/voting/CandidateGrid.tsx
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, PlayCircle } from "lucide-react";
 import { candidates, type Candidate } from "@/lib/candidates";
@@ -33,6 +33,27 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
   const prev = () => goTo(centerIndex - 1);
   const next = () => goTo(centerIndex + 1);
 
+  const touchStartX = useRef<number | null>(null);
+
+  const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const onTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (touchStartX.current == null) return;
+
+    const delta = e.changedTouches[0].clientX - touchStartX.current;
+
+    if (Math.abs(delta) > 60) {
+      if (delta > 0) {
+        prev();
+      } else {
+        next();
+      }
+    }
+
+    touchStartX.current = null;
+  };
   // Navega el perfil abierto sin cerrarlo. También sincroniza el carrusel
   // de fondo (centerIndex) para que, si el usuario cierra el perfil, quede
   // centrado en el mismo candidato que estaba viendo.
@@ -58,7 +79,12 @@ export function CandidateGrid({ votingOpen, closedMessage, onVoteSubmit }: Props
       */}
       <div
         className="relative mx-auto w-full max-w-5xl"
-        style={{ height: "clamp(240px, 44dvh, 460px)" }}
+        style={{
+          height: "clamp(240px, 44dvh, 460px)",
+          touchAction: "pan-y",
+        }}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
       >
         <button
           type="button"
@@ -169,7 +195,10 @@ function CarouselCard({
         filter: isCenter ? "blur(0px)" : "blur(3px)",
       }}
       transition={{ type: "spring", stiffness: 260, damping: 28 }}
-      style={{ zIndex: isCenter ? 30 : 10 - Math.abs(offset) }}
+      style={{
+        zIndex: isCenter ? 30 : 10 - Math.abs(offset),
+        pointerEvents: visible ? "auto" : "none",
+      }}
       aria-label={isCenter ? `Ver perfil de ${candidate.nombre}` : `Centrar en ${candidate.nombre}`}
       aria-hidden={!visible}
       tabIndex={visible ? 0 : -1}
