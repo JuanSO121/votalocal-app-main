@@ -111,31 +111,6 @@ export const candidates: Candidate[] = [
     ],
   },
   {
-    id: "SG-2026-02",
-    nombre: "Arnol Cosme Aragón",
-    cargo: "Auxiliar Administrativo",
-    fechaIngreso: "5 de agosto de 2025",
-    dependencia: "Atención al Ciudadano",
-    foto: "/img/Arnol-Cosme-Aragon.jpeg",
-    video: "/videos/Arnol-Cosme-Aragon.mp4",
-    color: CANDIDATE_PALETTE.dorado,
-    descripcion:
-      "Administrador Público y Tecnólogo en Sistemas de Información, con experiencia en gestión pública, fortalecimiento institucional y articulación interinstitucional. Se destacó por su capacidad de gestión, organización de procesos y orientación al mejoramiento continuo del servicio al ciudadano.",
-    periodoAportes: PERIODO_DEFAULT,
-    variablesCultura: ["Relación entre procesos", "Servicio de entrega a clientes internos y externos"],
-    aportes: [
-      "Apoyó la gestión y movilización de las felicitaciones registradas en el Módulo de Atención de la Secretaría General, fortaleciendo el reconocimiento a la calidad del servicio al ciudadano.",
-      "Acompañó la organización del Módulo de Atención mediante la implementación de la metodología 5S, contribuyendo al orden, la estandarización y optimización de los espacios de trabajo.",
-      "Impulsó la creación del Semáforo de PQRSDF como herramienta para el seguimiento oportuno de peticiones, la toma de decisiones y la mejora continua del proceso.",
-      
-    ],
-    trayectoria: [
-      "Ha desarrollado actividades orientadas a la gestión administrativa, seguimiento de procesos y fortalecimiento de la atención al ciudadano.",
-      "Cuenta con experiencia en acompañamiento técnico a proyectos y procesos institucionales enfocados en la generación de impacto social.",
-      "Contribuyó al fortalecimiento de la eficiencia institucional y la orientación al ciudadano.",
-    ],
-  },
-  {
     id: "SG-2026-03",
     nombre: "Carlos Neirón Puentes Rojas",
     cargo: "Líder de Programa",
@@ -167,9 +142,9 @@ export const candidates: Candidate[] = [
     nombre: "Leidy Lorena Torres Ramírez",
     cargo: "Profesional Universitario",
     fechaIngreso: "6 de mayo de 2025",
-    dependencia: "Atención al Ciudadano",
+    dependencia: "Servicio al Ciudadano",
     foto: "/img/Leidy_Lorena_Torres_Ramírez.jpeg",
-    video: "",
+    video: "/videos/Leidy_Lorena_Torres_Ramírez.mp4",
     color: CANDIDATE_PALETTE.verde,
     descripcion:
       "Profesional en Estadística, con orientación a la gestión pública, comprometida con la generación de valor público, el fortalecimiento institucional y la mejora continua mediante la implementación de sistemas integrados de gestión.",
@@ -201,5 +176,5 @@ export const candidates: Candidate[] = [
   color: "#9CA3AF", // Gris neutro
   descripcion:
     "Seleccione esta opción si considera que ninguno de los candidatos representa su elección para el reconocimiento de Mejor Servidor Público.",
-}
+  }
 ];
