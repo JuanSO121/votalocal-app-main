@@ -229,7 +229,7 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="nombre@valledelcauca.gov.co"
+                            placeholder="nombre@correoregistrado.com"
                             autoComplete="email"
                             disabled={busy}
                             {...field}
