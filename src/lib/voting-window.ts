@@ -13,7 +13,7 @@
 // la apertura de la votación — NUNCA use `new Date()` sin argumentos aquí,
 // porque el servidor (SSR) y el navegador evalúan este archivo en momentos
 // distintos, y eso rompe la hidratación de React (mismatch servidor/cliente).
-export const VOTING_START = new Date("2026-08-05T14:00:00-05:00");
+export const VOTING_START = new Date("2026-08-05T13:00:00-05:00");
 
 export const VOTING_END = new Date("2026-08-05T16:30:00-05:00");
 
