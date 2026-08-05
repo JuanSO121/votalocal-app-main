@@ -224,7 +224,7 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-1.5">
-                          <Mail className="h-3.5 w-3.5" /> Correo institucional
+                          <Mail className="h-3.5 w-3.5" /> Correo
                         </FormLabel>
                         <FormControl>
                           <Input
