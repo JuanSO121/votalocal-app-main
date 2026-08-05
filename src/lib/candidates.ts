@@ -87,7 +87,7 @@ export const candidates: Candidate[] = [
     dependencia: "Participación Ciudadana y Rendición de Cuentas",
     foto: "/img/Jhoan_Sebastian_Tabares.jpg",
     video: "/videos/Jhoan_Sebastian_Tabares.mp4",
-    color: CANDIDATE_PALETTE.teal,
+    color: CANDIDATE_PALETTE.naranja,
     descripcion:
       "Politólogo, especialista en Gerencia Social, con diplomados en enfoques diferenciales, resolución de conflictos y construcción de paz territorial. Habla portugués como segunda lengua y se destaca por su liderazgo, respeto y compromiso con el servicio público.",
     periodoAportes: PERIODO_DEFAULT,
