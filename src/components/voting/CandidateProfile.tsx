@@ -471,89 +471,68 @@ export function CandidateProfile({
             </div>
           </div>
 
-          {/*
-            Ticket de votación con efectos:
-            - Halo detrás (blur grande, mismo accent) para dar profundidad
-              y despegarlo de cualquier fondo, incluso uno del mismo verde
-              institucional.
-            - Relleno en degradado (accent claro arriba → accentDark abajo)
-              más inset-shadows que simulan volumen, en vez del color plano
-              anterior.
-            - Anillo blanco semitransparente que traza el contorno del
-              ticket para que no se funda con fondos del mismo tono.
-            - Barrido de brillo (shine) que cruza una sola vez al aparecer.
-          */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-5 z-30 flex justify-center px-4 sm:bottom-7">
-            {votingOpen ? (
-              <motion.div
-                initial={{ y: 24, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
-                className="pointer-events-auto relative"
-              >
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 -z-10 scale-[1.15] blur-2xl"
-                  style={{
-                    backgroundColor: accent,
-                    opacity: 0.55,
-                    WebkitMaskImage: `url("data:image/svg+xml,${encodeURIComponent(ticketMaskSvg)}")`,
-                    maskImage: `url("data:image/svg+xml,${encodeURIComponent(ticketMaskSvg)}")`,
-                    WebkitMaskSize: "100% 100%",
-                    maskSize: "100% 100%",
-                  }}
-                />
-
-                <button
-                  type="button"
-                  onClick={(e) => {
-                    // Suelta el foco antes de que Radix marque este árbol
-                    // como aria-hidden al abrir el diálogo — evita el
-                    // warning de accesibilidad de foco retenido en
-                    // elemento oculto.
-                    e.currentTarget.blur();
-                    setVoteOpen(true);
-                  }}
-                  className="relative flex items-center gap-2.5 py-3.5 pl-6 pr-7 text-sm font-semibold text-white ring-2 ring-white/40 transition hover:brightness-110 active:scale-[0.98]"
-                  style={{
-                    background: `linear-gradient(180deg, ${accent} 0%, ${accentDark} 100%)`,
-                    boxShadow:
-                      "0 18px 40px -10px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.35), inset 0 -8px 14px -6px rgba(0,0,0,0.25)",
-                    WebkitMaskImage: `url("data:image/svg+xml,${encodeURIComponent(ticketMaskSvg)}")`,
-                    maskImage: `url("data:image/svg+xml,${encodeURIComponent(ticketMaskSvg)}")`,
-                    WebkitMaskSize: "100% 100%",
-                    maskSize: "100% 100%",
-                  }}
+            {/*
+              Botón de votar: cápsula simple con halo ambiental que respira
+              suavemente (pulse muy sutil, no un shine que cruza una sola vez),
+              degradado diagonal apenas perceptible y profundidad real por capas
+              de sombra en vez de inset-highlights simulando plástico.
+            */}
+            <div className="pointer-events-none absolute inset-x-0 bottom-5 z-30 flex justify-center px-4 sm:bottom-7">
+              {votingOpen ? (
+                <motion.div
+                  initial={{ y: 24, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
+                  className="pointer-events-auto relative"
                 >
-                  <motion.span
+                  {/* Halo: glow radial detrás de la cápsula, respira lento y sutil */}
+                  <motion.div
                     aria-hidden="true"
-                    className="pointer-events-none absolute inset-y-0 left-0 w-1/3"
-                    style={{
-                      background:
-                        "linear-gradient(115deg, transparent 0%, rgba(255,255,255,0.55) 45%, transparent 90%)",
-                    }}
-                    initial={{ x: "-120%" }}
-                    animate={{ x: "320%" }}
-                    transition={{ duration: 1.1, delay: 0.6, ease: "easeInOut" }}
+                    className="absolute inset-0 -z-10 rounded-full blur-2xl"
+                    style={{ backgroundColor: accent }}
+                    animate={{ opacity: [0.35, 0.55, 0.35], scale: [1.05, 1.15, 1.05] }}
+                    transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
                   />
-                  <Vote className="h-4 w-4 shrink-0 drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]" />
-                  <span className="relative whitespace-nowrap drop-shadow-[0_1px_1px_rgba(0,0,0,0.35)]">
-                    Votar por {candidate.nombre.split(" ")[0]}
-                  </span>
-                </button>
-              </motion.div>
-            ) : (
-              <motion.span
-                initial={{ y: 24, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
-                className="pointer-events-auto relative flex items-center gap-2 rounded-full border border-border bg-background/90 px-6 py-3 text-sm font-medium text-muted-foreground shadow-[0_14px_32px_-14px_rgba(0,0,0,0.35)] backdrop-blur-md"
-              >
-                <Lock className="h-4 w-4 shrink-0" />
-                {closedMessage}
-              </motion.span>
-            )}
-          </div>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      // Suelta el foco antes de que Radix marque este árbol
+                      // como aria-hidden al abrir el diálogo — evita el
+                      // warning de accesibilidad de foco retenido en
+                      // elemento oculto.
+                      e.currentTarget.blur();
+                      setVoteOpen(true);
+                    }}
+                    className="group relative flex items-center gap-2.5 rounded-full py-3.5 pl-6 pr-7 text-sm font-semibold text-white transition-transform duration-200 active:scale-[0.97]"
+                    style={{
+                      background: `linear-gradient(135deg, ${accent} 0%, ${accentDark} 100%)`,
+                      boxShadow: `0 8px 24px -6px ${accent}66, 0 2px 6px rgba(0,0,0,0.25)`,
+                    }}
+                  >
+                    {/* Borde sutil: un anillo interior de 1px, no el marco blanco grueso anterior */}
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-inset ring-white/25 transition group-hover:ring-white/40"
+                    />
+                    <Vote className="relative h-4 w-4 shrink-0 transition-transform duration-200 group-hover:scale-110" />
+                    <span className="relative whitespace-nowrap">
+                      Votar por {candidate.nombre.split(" ")[0]}
+                    </span>
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.span
+                  initial={{ y: 24, opacity: 0 }}
+                  animate={{ y: 0, opacity: 1 }}
+                  transition={{ type: "spring", stiffness: 260, damping: 22, delay: 0.1 }}
+                  className="pointer-events-auto relative flex items-center gap-2 rounded-full border border-border bg-background/90 px-6 py-3 text-sm font-medium text-muted-foreground shadow-[0_14px_32px_-14px_rgba(0,0,0,0.35)] backdrop-blur-md"
+                >
+                  <Lock className="h-4 w-4 shrink-0" />
+                  {closedMessage}
+                </motion.span>
+              )}
+            </div>
 
           <VoteFlowDialog
             candidate={candidate}

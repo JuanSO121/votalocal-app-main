@@ -7,4 +7,4 @@
  * los resultados solo al cerrar la votación, para evitar efecto de
  * arrastre (bandwagon) mientras la gente sigue votando.
  */
-export const SHOW_LIVE_RESULTS = true;
+export const SHOW_LIVE_RESULTS = false;
