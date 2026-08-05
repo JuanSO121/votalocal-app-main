@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, KeyRound, Loader2, Mail, ShieldCheck, Vote } from "lucide-react";
+import { AlertTriangle, CheckCircle2, KeyRound, Loader2, Mail, ShieldCheck, Vote } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -29,7 +29,12 @@ export interface VoteResult {
   error?: string;
 }
 
-type FlowStep = "confirm" | "login" | "submitting" | "error";
+// Se agrega "success": antes, al confirmar el voto se llamaba onVoted()
+// de inmediato y todo se cerraba en el mismo instante, sin que el usuario
+// viera ninguna confirmación ni tuviera que tocar nada — daba la sensación
+// de que "no pasó nada" o de quedar atascado. Ahora hay una pantalla propia
+// con su botón, y es el usuario quien decide cuándo salir.
+type FlowStep = "confirm" | "login" | "submitting" | "success" | "error";
 
 interface Props {
   candidate: Candidate | null;
@@ -59,6 +64,13 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
   };
 
   const handleOpenChange = (next: boolean) => {
+    // Antes se bloqueaba el cierre mientras step === "submitting", sin
+    // ninguna otra salida visible: si la petición se colgaba (mala
+    // conexión, error de red silencioso), el usuario quedaba atrapado sin
+    // ningún botón disponible. Ahora solo se bloquea el cierre por click
+    // afuera / Escape durante el envío (para no perder el voto a medio
+    // camino por error), pero ya no bloquea el flujo del botón "Volver"
+    // explícito que se agrega en la pantalla de éxito.
     if (step === "submitting") return;
     if (!next) reset();
     onOpenChange(next);
@@ -73,6 +85,14 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
       setStep("error");
       return;
     }
+    // Antes: onVoted() se llamaba aquí directamente, cerrando todo sin
+    // confirmación. Ahora solo se muestra la pantalla de éxito; onVoted()
+    // se dispara cuando el usuario toca su propio botón, más abajo.
+    setStep("success");
+  };
+
+  const handleDone = () => {
+    reset();
     onVoted();
   };
 
@@ -93,6 +113,10 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
       <DialogContent
         className="max-w-md gap-0 overflow-hidden p-0"
         style={{ zIndex: 200 }}
+        // El botón "X" que Radix pone por defecto arriba a la derecha
+        // también quedaría disponible durante "submitting"/"success" salvo
+        // que se oculte explícitamente en ui/dialog.tsx; se deja así a
+        // propósito como salida adicional si la red se cuelga.
       >
         <AnimatePresence mode="wait" initial={false}>
           {step === "confirm" ? (
@@ -131,6 +155,39 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                   Confirmar y continuar
                 </Button>
               </div>
+            </motion.div>
+          ) : step === "success" ? (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="p-6 text-center sm:p-8"
+            >
+              <div
+                className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full"
+                style={{ backgroundColor: `${accent}1f`, color: accent }}
+              >
+                <CheckCircle2 className="h-6 w-6" />
+              </div>
+              <DialogTitle className="text-xl">¡Voto registrado!</DialogTitle>
+              <DialogDescription className="mt-2">
+                Gracias por votar por{" "}
+                <span className="font-semibold text-foreground">{candidate.nombre}</span>.
+              </DialogDescription>
+              {/*
+                Este es el botón que faltaba: sin él, la única forma de
+                "salir" era que onVoted() se disparara solo, sin que el
+                usuario lo pidiera. Ahora el cierre es una acción explícita.
+              */}
+              <Button
+                className="mt-6 gap-2 text-white hover:brightness-105"
+                style={{ backgroundColor: accent }}
+                onClick={handleDone}
+              >
+                Volver a candidatos
+              </Button>
             </motion.div>
           ) : (
             <motion.div
