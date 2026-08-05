@@ -83,7 +83,7 @@ function VotingPage() {
                       Secretaría General · Cultura Organizacional
                     </p>
                     <h1 className="mt-1 text-[clamp(1.5rem,3.5vw,2.25rem)] font-bold text-foreground">
-                      Mejor Servidor Público
+                      Mejor Servidor Público - Primer Periodo 2026
                     </h1>
                   </div>
                   {phase !== "closed" && (

@@ -163,8 +163,7 @@ export function CandidateProfile({
               <button
                 type="button"
                 aria-label={muted ? "Activar sonido" : "Silenciar"}
-                onClick={() => setMuted((m) => !m)}
-                className="pointer-events-auto rounded-full border border-white/20 bg-black/30 p-2.5 text-white backdrop-blur-md transition hover:bg-black/45"
+                className="pointer-events-auto rounded-full border border-white/50 bg-white/20 p-2.5 text-white backdrop-blur-lg shadow-lg transition hover:bg-white/30"
               >
                 {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
               </button>
