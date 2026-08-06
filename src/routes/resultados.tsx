@@ -29,7 +29,18 @@ function ResultsPage() {
   );
   const top3 = ranked.slice(0, 3);
 
-  if (!SHOW_LIVE_RESULTS) {
+  // Antes: `if (!SHOW_LIVE_RESULTS)` bloqueaba la página SIEMPRE que la
+  // bandera estuviera en false, sin importar si ya se había cumplido la
+  // ventana de revelación (RESULTS_REVEAL_AT). Eso hacía que, con
+  // SHOW_LIVE_RESULTS = false, "Resultados no disponibles" se mostrara para
+  // siempre — incluso pasada la hora, cuando `revealed` ya era true.
+  //
+  // Ahora el bloqueo solo aplica mientras el resultado NO se ha revelado:
+  // SHOW_LIVE_RESULTS sigue sirviendo para ocultar el panel "en vivo"
+  // mientras la gente vota (evitar efecto bandwagon), pero una vez pasa
+  // RESULTS_REVEAL_AT (`revealed === true`) la página se muestra igual,
+  // sin importar el valor de la bandera.
+  if (!SHOW_LIVE_RESULTS && !revealed) {
     return (
       <div className="voting-shell flex min-h-screen flex-col">
         <Header />
