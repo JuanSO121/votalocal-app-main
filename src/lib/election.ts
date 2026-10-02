@@ -51,6 +51,20 @@ export function fotoPlaceholder(color: string): string {
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
 }
 
+/**
+ * Limpia la frase que viene del Excel: quita comillas envolventes y,
+ * si está TODA en mayúsculas, la pasa a minúscula con la primera letra en mayúscula.
+ */
+export function limpiarFrase(texto: string): string {
+  let t = (texto ?? "").trim().replace(/^[“"«'‘]+|[”"»'’]+$/g, "").trim();
+  const letras = t.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g, "");
+  if (letras.length > 8 && letras === letras.toUpperCase()) {
+    t = t.toLowerCase();
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  return t;
+}
+
 function demoElection(): ElectionConfig {
   const now = Date.now();
   const mk = (i: number, nombre: string, municipio: string): Candidate => ({
@@ -96,7 +110,11 @@ export async function fetchElection(): Promise<ElectionConfig> {
   }
   return {
     eleccion: raw.eleccion,
-    candidatas: raw.candidatas.map((c) => ({ ...c, foto: c.foto || fotoPlaceholder(c.color) })),
+    candidatas: raw.candidatas.map((c) => ({
+      ...c,
+      frase: limpiarFrase(c.frase),
+      foto: c.foto || fotoPlaceholder(c.color),
+    })),
   };
 }
 
