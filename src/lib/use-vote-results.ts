@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { candidates } from "./candidates";
+import { useCallback, useEffect, useState } from "react";
+import type { Candidate } from "./election";
 import { fetchResults, type CandidateResult } from "./vote-api";
 
 export interface RankedCandidate {
@@ -20,23 +20,22 @@ interface UseVoteResults {
   refresh: () => void;
 }
 
-const FALLBACK_COLOR = "#2f8f4e";
-
 /**
- * Trae y ordena los resultados de votación de mayor a menor.
- * @param pollMs si es mayor a 0, vuelve a consultar cada `pollMs` ms
- *   (úselo en paneles "en vivo"; déjelo en 0 para una sola carga).
+ * Trae y ordena los resultados de mayor a menor.
+ * @param candidates lista de candidatas (viene de useElection)
+ * @param pollMs si es mayor a 0, vuelve a consultar cada `pollMs` ms.
  */
-export function useVoteResults(pollMs = 0): UseVoteResults {
+export function useVoteResults(candidates: Candidate[], pollMs = 0): UseVoteResults {
   const [raw, setRaw] = useState<CandidateResult[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [updatedAt, setUpdatedAt] = useState<Date | null>(null);
-  const idsRef = useRef(candidates.map((c) => c.id));
+  const idsKey = candidates.map((c) => c.id).join("|");
 
   const load = useCallback(async () => {
-    const res = await fetchResults(idsRef.current);
+    if (!idsKey) return;
+    const res = await fetchResults(idsKey.split("|"));
     if (!res.ok) {
       setError(res.error ?? "No fue posible cargar los resultados.");
       setLoading(false);
@@ -47,13 +46,13 @@ export function useVoteResults(pollMs = 0): UseVoteResults {
     setTotal(res.total);
     setUpdatedAt(new Date(res.actualizado));
     setLoading(false);
-  }, []);
+  }, [idsKey]);
 
   useEffect(() => {
     load();
     if (!pollMs) return;
-    const interval = setInterval(load, pollMs);
-    return () => clearInterval(interval);
+    const i = setInterval(load, pollMs);
+    return () => clearInterval(i);
   }, [load, pollMs]);
 
   const ranked: RankedCandidate[] = candidates
@@ -63,7 +62,7 @@ export function useVoteResults(pollMs = 0): UseVoteResults {
         id: c.id,
         nombre: c.nombre,
         foto: c.foto,
-        color: c.color ?? FALLBACK_COLOR,
+        color: c.color,
         votos,
         porcentaje: total > 0 ? (votos / total) * 100 : 0,
       };

@@ -1,49 +1,54 @@
 // routes/resultados.tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { Lock, RefreshCw } from "lucide-react";
 import { Footer, Header } from "@/components/voting/Header";
-
-import { useVoteResults } from "@/lib/use-vote-results";
-
-import { SHOW_LIVE_RESULTS } from "@/lib/results-config";
 import { ResultsPodium } from "@/components/voting/ResultsPodium";
 import { ResultsBoard } from "@/components/voting/ResultsBoard";
-import { useResultsReveal } from "@/lib/use-results-reveal";
 import { ResultsRevealCountdown } from "@/components/voting/ResultsRevealCountdown";
 import { WinnerAnnouncement } from "@/components/voting/WinnerAnnouncement";
+import { useElection } from "@/lib/election";
+import { useVoteResults } from "@/lib/use-vote-results";
+import { useResultsReveal } from "@/lib/use-results-reveal";
+import { buildWindow } from "@/lib/voting-window";
 
 export const Route = createFileRoute("/resultados")({
   component: ResultsPage,
 });
 
 function ResultsPage() {
-  const { phase, revealed, countdown } = useResultsReveal();
+  const { data, error: loadError, loading: loadingElection } = useElection();
+  const eleccion = data?.eleccion;
+  const win = useMemo(() => (eleccion ? buildWindow(eleccion) : null), [eleccion]);
+  const { phase, revealed, countdown } = useResultsReveal(win);
   const isClosed = phase === "closed";
 
-  // Una vez la votación cerró Y ya se reveló al ganador, los números son
-  // finales — no tiene sentido seguir haciendo polling cada 8s contra el
-  // Apps Script. Antes de eso (votación abierta, o cerrada pero en la
-  // ventana de suspenso) sí se sigue consultando en vivo.
+  // Con la votación cerrada y el ganador ya revelado los números son finales: no hace falta seguir consultando.
   const { ranked, total, loading, error, updatedAt, refresh } = useVoteResults(
+    data?.candidatas ?? [],
     isClosed && revealed ? 0 : 8000
   );
   const top3 = ranked.slice(0, 3);
 
-  // Antes: `if (!SHOW_LIVE_RESULTS)` bloqueaba la página SIEMPRE que la
-  // bandera estuviera en false, sin importar si ya se había cumplido la
-  // ventana de revelación (RESULTS_REVEAL_AT). Eso hacía que, con
-  // SHOW_LIVE_RESULTS = false, "Resultados no disponibles" se mostrara para
-  // siempre — incluso pasada la hora, cuando `revealed` ya era true.
-  //
-  // Ahora el bloqueo solo aplica mientras el resultado NO se ha revelado:
-  // SHOW_LIVE_RESULTS sigue sirviendo para ocultar el panel "en vivo"
-  // mientras la gente vota (evitar efecto bandwagon), pero una vez pasa
-  // RESULTS_REVEAL_AT (`revealed === true`) la página se muestra igual,
-  // sin importar el valor de la bandera.
-  if (!SHOW_LIVE_RESULTS && !revealed) {
+  if (!eleccion) {
     return (
       <div className="voting-shell flex min-h-screen flex-col">
         <Header />
+        <main className="mx-auto flex w-full max-w-2xl flex-1 items-center justify-center px-4 text-center">
+          <p className={`text-sm ${loadError ? "text-destructive" : "text-muted-foreground"}`}>
+            {loadingElection ? "Cargando…" : loadError}
+          </p>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  // Mientras no se revele, el panel solo existe si la elección permite resultados en vivo (evita el efecto de arrastre).
+  if (!eleccion.resultadosEnVivo && !revealed) {
+    return (
+      <div className="voting-shell flex min-h-screen flex-col">
+        <Header entidad={eleccion.entidad} />
         <main className="mx-auto flex w-full max-w-2xl flex-1 flex-col items-center justify-center px-4 py-16 text-center">
           <h1 className="text-xl font-bold text-foreground">Resultados no disponibles</h1>
           <p className="mt-2 text-sm text-muted-foreground">
@@ -53,20 +58,17 @@ function ResultsPage() {
             ← Volver al inicio
           </Link>
         </main>
-        <Footer />
+        <Footer entidad={eleccion.entidad} />
       </div>
     );
   }
 
-  // Mientras la votación cerró pero aún no pasa la espera configurada
-  // (RESULTS_REVEAL_DELAY_MINUTES), se muestra el suspenso en vez del
-  // podio/tablero — así nadie ve el ganador antes de tiempo.
   const showCountdown = isClosed && !revealed;
   const showWinner = isClosed && revealed;
 
   return (
     <div className="voting-shell flex min-h-screen flex-col">
-      <Header />
+      <Header entidad={eleccion.entidad} showResults />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-8 sm:px-6 sm:py-12">
         <div className="flex items-center justify-between gap-4">
           <div>
@@ -90,26 +92,24 @@ function ResultsPage() {
           )}
         </div>
 
-        {error ? (
+        {showCountdown ? (
+          <div className="mt-8">
+            <ResultsRevealCountdown countdown={countdown} titulo={eleccion.titulo} />
+          </div>
+        ) : error ? (
           <div className="mt-6 rounded-2xl border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
             {error}
-          </div>
-        ) : showCountdown ? (
-          <div className="mt-8">
-            <ResultsRevealCountdown countdown={countdown} />
           </div>
         ) : (
           <>
             {showWinner && (
               <div className="mt-8">
-                <WinnerAnnouncement ranked={ranked} total={total} />
+                <WinnerAnnouncement ranked={ranked} total={total} titulo={eleccion.titulo} />
               </div>
             )}
 
             <div
-              className={`rounded-3xl border border-border bg-card p-6 shadow-card sm:p-10 ${
-                showWinner ? "mt-0" : "mt-8"
-              }`}
+              className={`rounded-3xl border border-border bg-card p-6 shadow-card sm:p-10 ${showWinner ? "mt-0" : "mt-8"}`}
             >
               <ResultsPodium top3={top3} />
             </div>
@@ -147,7 +147,7 @@ function ResultsPage() {
           </Link>
         </div>
       </main>
-      <Footer />
+      <Footer entidad={eleccion.entidad} />
     </div>
   );
 }

@@ -4,15 +4,12 @@ import type { Countdown } from "@/lib/voting-window";
 
 interface Props {
   countdown: Countdown;
+  /** Título de la elección (CONFIG.TITULO). */
+  titulo: string;
 }
 
-/**
- * Se muestra en el lugar del podio mientras la votación ya cerró pero aún
- * no pasa el tiempo de espera configurado (RESULTS_REVEAL_DELAY_MINUTES).
- * Mismo lenguaje visual "cinematográfico" oscuro que WinnerAnnouncement,
- * pero sin revelar todavía nada — genera expectativa en vez de spoilear.
- */
-export function ResultsRevealCountdown({ countdown }: Props) {
+/** Suspenso entre el cierre de la votación y la hora de revelación del resultado. */
+export function ResultsRevealCountdown({ countdown, titulo }: Props) {
   const pad = (n: number) => String(n).padStart(2, "0");
 
   return (
@@ -20,11 +17,9 @@ export function ResultsRevealCountdown({ countdown }: Props) {
       <div
         className="pointer-events-none absolute inset-0"
         style={{
-          background:
-            "radial-gradient(60% 90% at 50% 10%, oklch(0.32 0.11 260 / 0.9) 0%, oklch(0.16 0.05 260) 60%)",
+          background: "radial-gradient(60% 90% at 50% 10%, oklch(0.32 0.11 260 / 0.9) 0%, oklch(0.16 0.05 260) 60%)",
         }}
       />
-
       <motion.div
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-8 h-40 w-40 -translate-x-1/2 rounded-full sm:h-56 sm:w-56"
@@ -49,7 +44,7 @@ export function ResultsRevealCountdown({ countdown }: Props) {
           transition={{ delay: 0.1 }}
           className="mt-5 text-2xl font-bold text-white sm:text-3xl"
         >
-          El Mejor Servidor Público se revela en...
+          El resultado se revela en...
         </motion.h2>
 
         <motion.div
@@ -66,22 +61,15 @@ export function ResultsRevealCountdown({ countdown }: Props) {
             <span key={u.l} className="flex items-center gap-2 sm:gap-3">
               <span className="flex flex-col items-center">
                 <span>{pad(u.v)}</span>
-                <span className="text-[0.6rem] font-medium uppercase tracking-widest text-white/50 sm:text-xs">
-                  {u.l}
-                </span>
+                <span className="text-[0.6rem] font-medium uppercase tracking-widest text-white/50 sm:text-xs">{u.l}</span>
               </span>
               {i < 2 && <span className="text-white/30">:</span>}
             </span>
           ))}
         </motion.div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-5 text-sm text-white/60"
-        >
-          Cultura de la Organización · Secretaría General · Enero – Junio 2026
+        <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }} className="mt-5 text-sm text-white/60">
+          {titulo}
         </motion.p>
       </div>
     </div>

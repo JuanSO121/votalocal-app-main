@@ -3,37 +3,25 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion } from "framer-motion";
-import { AlertTriangle, CheckCircle2, KeyRound, Loader2, Mail, ShieldCheck, Vote } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { AlertTriangle, CheckCircle2, KeyRound, Loader2, ShieldCheck, User, Vote } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { voterSchema, type VoterFormValues } from "@/lib/vote-schema";
-import type { Candidate } from "@/lib/candidates";
+import { BLANCO_ID, type Candidate } from "@/lib/election";
 
 export interface VoteResult {
   ok: boolean;
   error?: string;
 }
 
-// Se agrega "success": antes, al confirmar el voto se llamaba onVoted()
-// de inmediato y todo se cerraba en el mismo instante, sin que el usuario
-// viera ninguna confirmación ni tuviera que tocar nada — daba la sensación
-// de que "no pasó nada" o de quedar atascado. Ahora hay una pantalla propia
-// con su botón, y es el usuario quien decide cuándo salir.
+/** Etiquetas del formulario de acceso (vienen de CONFIG en el Sheet). */
+export interface LoginLabels {
+  usuario: string;
+  clave: string;
+}
+
 type FlowStep = "confirm" | "login" | "submitting" | "success" | "error";
 
 interface Props {
@@ -42,35 +30,28 @@ interface Props {
   onOpenChange: (v: boolean) => void;
   onVoteSubmit: (candidate: Candidate, voter: VoterFormValues) => Promise<VoteResult>;
   onVoted: () => void;
+  labels: LoginLabels;
 }
 
-const FALLBACK_COLOR = "var(--accent)";
-
-export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, onVoted }: Props) {
+export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, onVoted, labels }: Props) {
   const [step, setStep] = useState<FlowStep>("confirm");
   const [errorMsg, setErrorMsg] = useState("");
-  const accent = candidate?.color ?? FALLBACK_COLOR;
+  const accent = candidate?.color ?? "var(--accent)";
 
   const form = useForm<VoterFormValues>({
     resolver: zodResolver(voterSchema),
-    defaultValues: { correo: "", documento: "" },
+    defaultValues: { usuaria: "", clave: "" },
     mode: "onBlur",
   });
 
   const reset = () => {
     setStep("confirm");
     setErrorMsg("");
-    form.reset({ correo: "", documento: "" });
+    form.reset({ usuaria: "", clave: "" });
   };
 
   const handleOpenChange = (next: boolean) => {
-    // Antes se bloqueaba el cierre mientras step === "submitting", sin
-    // ninguna otra salida visible: si la petición se colgaba (mala
-    // conexión, error de red silencioso), el usuario quedaba atrapado sin
-    // ningún botón disponible. Ahora solo se bloquea el cierre por click
-    // afuera / Escape durante el envío (para no perder el voto a medio
-    // camino por error), pero ya no bloquea el flujo del botón "Volver"
-    // explícito que se agrega en la pantalla de éxito.
+    // Durante el envío no se permite cerrar por click afuera / Escape (para no perder el voto a medias).
     if (step === "submitting") return;
     if (!next) reset();
     onOpenChange(next);
@@ -85,9 +66,6 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
       setStep("error");
       return;
     }
-    // Antes: onVoted() se llamaba aquí directamente, cerrando todo sin
-    // confirmación. Ahora solo se muestra la pantalla de éxito; onVoted()
-    // se dispara cuando el usuario toca su propio botón, más abajo.
     setStep("success");
   };
 
@@ -98,36 +76,23 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
 
   if (!candidate) return null;
   const busy = step === "submitting";
+  const esBlanco = candidate.id === BLANCO_ID;
+  const destino = esBlanco ? "el voto en blanco" : candidate.nombre;
+
+  const anim = {
+    initial: { opacity: 0, x: 16 },
+    animate: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -16 },
+    transition: { duration: 0.2, ease: "easeOut" as const },
+  };
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      {/*
-        IMPORTANTE: CandidateProfile es un overlay fixed con z-[100].
-        El Dialog de shadcn/Radix se monta en un Portal aparte con z-50 por
-        defecto, así que sin forzar un z-index mayor aquí, este modal queda
-        TAPADO detrás del perfil — se abre (el estado cambia) pero no se ve
-        ni se puede interactuar con él. El estilo inline siempre gana sobre
-        cualquier clase de Tailwind, así que es la forma más segura de
-        garantizar que quede por encima sin tocar ui/dialog.tsx.
-      */}
-      <DialogContent
-        className="max-w-md gap-0 overflow-hidden p-0"
-        style={{ zIndex: 200 }}
-        // El botón "X" que Radix pone por defecto arriba a la derecha
-        // también quedaría disponible durante "submitting"/"success" salvo
-        // que se oculte explícitamente en ui/dialog.tsx; se deja así a
-        // propósito como salida adicional si la red se cuelga.
-      >
+      {/* El perfil es un overlay fixed z-[100]; el Dialog de Radix usa z-50 → se fuerza por encima. */}
+      <DialogContent className="max-w-md gap-0 overflow-hidden p-0" style={{ zIndex: 200 }}>
         <AnimatePresence mode="wait" initial={false}>
           {step === "confirm" ? (
-            <motion.div
-              key="confirm"
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="p-6 sm:p-8"
-            >
+            <motion.div key="confirm" {...anim} className="p-6 sm:p-8">
               <DialogHeader>
                 <div
                   className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full"
@@ -137,8 +102,7 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                 </div>
                 <DialogTitle className="text-center text-xl">Confirme su voto</DialogTitle>
                 <DialogDescription className="text-center">
-                  Está a punto de votar por{" "}
-                  <span className="font-semibold text-foreground">{candidate.nombre}</span>.
+                  Está a punto de votar por <span className="font-semibold text-foreground">{destino}</span>.
                   <br />
                   Una vez enviado, <span className="font-semibold">no podrá modificarse</span>.
                 </DialogDescription>
@@ -157,14 +121,7 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
               </div>
             </motion.div>
           ) : step === "success" ? (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="p-6 text-center sm:p-8"
-            >
+            <motion.div key="success" {...anim} className="p-6 text-center sm:p-8">
               <div
                 className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full"
                 style={{ backgroundColor: `${accent}1f`, color: accent }}
@@ -172,32 +129,17 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                 <CheckCircle2 className="h-6 w-6" />
               </div>
               <DialogTitle className="text-xl">¡Voto registrado!</DialogTitle>
-              <DialogDescription className="mt-2">
-                Gracias por votar por{" "}
-                <span className="font-semibold text-foreground">{candidate.nombre}</span>.
-              </DialogDescription>
-              {/*
-                Este es el botón que faltaba: sin él, la única forma de
-                "salir" era que onVoted() se disparara solo, sin que el
-                usuario lo pidiera. Ahora el cierre es una acción explícita.
-              */}
+              <DialogDescription className="mt-2">Gracias por participar.</DialogDescription>
               <Button
                 className="mt-6 gap-2 text-white hover:brightness-105"
                 style={{ backgroundColor: accent }}
                 onClick={handleDone}
               >
-                Volver a candidatos
+                Continuar
               </Button>
             </motion.div>
           ) : (
-            <motion.div
-              key="login"
-              initial={{ opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -16 }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
-              className="p-6 sm:p-8"
-            >
+            <motion.div key="login" {...anim} className="p-6 sm:p-8">
               <DialogHeader>
                 <div
                   className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-full"
@@ -207,30 +149,27 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                 </div>
                 <DialogTitle className="text-center text-xl">Confirme su identidad</DialogTitle>
                 <DialogDescription className="text-center">
-                  Use su correo registrado y su cédula para registrar el voto por{" "}
-                  <span className="font-semibold text-foreground">{candidate.nombre}</span>.
+                  Ingrese el usuario y la clave que le fueron entregados para registrar su voto.
                 </DialogDescription>
               </DialogHeader>
 
               <Form {...form}>
-                <form
-                  onSubmit={form.handleSubmit(handleLoginSubmit)}
-                  className="mt-6 grid gap-4"
-                  noValidate
-                >
+                <form onSubmit={form.handleSubmit(handleLoginSubmit)} className="mt-6 grid gap-4" noValidate>
                   <FormField
                     control={form.control}
-                    name="correo"
+                    name="usuaria"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-1.5">
-                          <Mail className="h-3.5 w-3.5" /> Correo
+                          <User className="h-3.5 w-3.5" /> {labels.usuario}
                         </FormLabel>
                         <FormControl>
                           <Input
-                            type="email"
-                            placeholder="nombre@correoregistrado.com"
-                            autoComplete="email"
+                            type="text"
+                            placeholder="usuaria0001"
+                            autoComplete="username"
+                            autoCapitalize="none"
+                            spellCheck={false}
                             disabled={busy}
                             {...field}
                           />
@@ -241,18 +180,21 @@ export function VoteFlowDialog({ candidate, open, onOpenChange, onVoteSubmit, on
                   />
                   <FormField
                     control={form.control}
-                    name="documento"
+                    name="clave"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-1.5">
-                          <KeyRound className="h-3.5 w-3.5" /> Cédula
+                          <KeyRound className="h-3.5 w-3.5" /> {labels.clave}
                         </FormLabel>
                         <FormControl>
+                          {/* type=text + mayúsculas: la clave es de un solo uso y es más fácil de digitar en el celular */}
                           <Input
-                            type="password"
-                            inputMode="numeric"
-                            placeholder="Su número de cédula"
-                            autoComplete="current-password"
+                            type="text"
+                            placeholder="XXXX-XXXX"
+                            autoComplete="off"
+                            autoCapitalize="characters"
+                            spellCheck={false}
+                            className="font-mono uppercase tracking-wider"
                             disabled={busy}
                             {...field}
                           />

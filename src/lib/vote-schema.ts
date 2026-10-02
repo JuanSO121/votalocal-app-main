@@ -1,22 +1,18 @@
 import { z } from "zod";
 
 /**
- * Validación del formulario de acceso del votante.
- * Se redujo a solo correo + documento (la cédula actúa como "contraseña").
- * Debe replicarse también en el Apps Script para defensa en profundidad.
+ * Acceso de la votante: usuaria + clave aleatoria que le entrega en persona
+ * quien coordina el reparto (ej. "K7M2-QX9P"). El backend ignora guiones,
+ * espacios y mayúsculas/minúsculas, así que aquí solo se valida la forma.
  */
 export const voterSchema = z.object({
-  correo: z
+  usuaria: z
     .string()
     .trim()
-    .email("Correo electrónico inválido")
-    .max(160, "Correo demasiado largo"),
-  documento: z
-    .string()
-    .trim()
-    .min(5, "Cédula inválida")
-    .max(20, "Cédula inválida")
-    .regex(/^[0-9]+$/, "Solo se permiten números"),
+    .min(3, "Usuario inválido")
+    .max(30, "Usuario inválido")
+    .regex(/^[a-zA-Z0-9._-]+$/, "Usuario inválido"),
+  clave: z.string().trim().min(6, "Clave inválida").max(20, "Clave inválida"),
 });
 
 export type VoterFormValues = z.infer<typeof voterSchema>;
