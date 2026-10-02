@@ -85,6 +85,11 @@ export async function fetchElection(): Promise<ElectionConfig> {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     if (!data.ok) throw new Error(data.error ?? "No fue posible cargar la votación.");
+    if (!data.eleccion || !Array.isArray(data.candidatas)) {
+      throw new Error(
+        "La URL del backend responde, pero no es la de esta votación (falta la configuración). Revise VITE_APPS_SCRIPT_URL."
+      );
+    }
     raw = { eleccion: data.eleccion, candidatas: data.candidatas };
   } else {
     raw = demoElection();
