@@ -74,6 +74,7 @@ export function CandidateProfile({
     "flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-border bg-secondary text-foreground transition hover:bg-secondary/70";
 
   return (
+    <>
     <AnimatePresence>
       {candidate && (
         <motion.div
@@ -216,20 +217,28 @@ export function CandidateProfile({
             </div>
           </motion.div>
 
-          <VoteFlowDialog
-            candidate={candidate}
-            labels={labels}
-            open={voteOpen}
-            onOpenChange={setVoteOpen}
-            onVoteSubmit={onVoteSubmit}
-            onVoted={() => {
-              setVoteOpen(false);
-              onVoteDone?.();
-              onClose();
-            }}
-          />
         </motion.div>
       )}
     </AnimatePresence>
+
+    {/*
+      IMPORTANTE: el diálogo va FUERA del fondo oscuro (el que tiene onClick={onClose}).
+      Radix lo monta en un portal, pero los eventos de React burbujean por el árbol de
+      React, no por el DOM: si estuviera dentro del fondo, cualquier clic en el formulario
+      llegaría a onClose y cerraría la tarjeta.
+    */}
+    <VoteFlowDialog
+      candidate={candidate}
+      labels={labels}
+      open={voteOpen}
+      onOpenChange={setVoteOpen}
+      onVoteSubmit={onVoteSubmit}
+      onVoted={() => {
+        setVoteOpen(false);
+        onVoteDone?.();
+        onClose();
+      }}
+    />
+    </>
   );
 }
