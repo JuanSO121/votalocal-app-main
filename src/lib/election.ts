@@ -42,27 +42,14 @@ export interface ElectionConfig {
  * así funciona en <img> y en background-image sin tocar ningún componente.
  */
 export function fotoPlaceholder(color: string): string {
+  // Busto compacto en la parte alta: deja libre la zona inferior donde va el texto de la tarjeta.
   const svg =
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400">` +
     `<rect width="300" height="400" fill="${color}"/>` +
-    `<circle cx="150" cy="150" r="62" fill="white" opacity="0.92"/>` +
-    `<path d="M40 400c0-88 49-140 110-140s110 52 110 140z" fill="white" opacity="0.92"/>` +
+    `<circle cx="150" cy="128" r="46" fill="white" opacity="0.9"/>` +
+    `<path d="M58 300C58 232 98 192 150 192S242 232 242 300Z" fill="white" opacity="0.9"/>` +
     `</svg>`;
   return "data:image/svg+xml;utf8," + encodeURIComponent(svg);
-}
-
-/**
- * Limpia la frase que viene del Excel: quita comillas envolventes y,
- * si está TODA en mayúsculas, la pasa a minúscula con la primera letra en mayúscula.
- */
-export function limpiarFrase(texto: string): string {
-  let t = (texto ?? "").trim().replace(/^[“"«'‘]+|[”"»'’]+$/g, "").trim();
-  const letras = t.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g, "");
-  if (letras.length > 8 && letras === letras.toUpperCase()) {
-    t = t.toLowerCase();
-    t = t.charAt(0).toUpperCase() + t.slice(1);
-  }
-  return t;
 }
 
 function demoElection(): ElectionConfig {
@@ -167,4 +154,18 @@ export function useElection() {
   }, []);
 
   return { data, error, loading: !data && !error };
+}
+
+/**
+ * Limpia la frase que viene del Excel: quita comillas envolventes y,
+ * si está TODA en mayúsculas, la pasa a minúscula con la primera letra en mayúscula.
+ */
+export function limpiarFrase(texto: string): string {
+  let t = (texto ?? "").trim().replace(/^[“"«'‘]+|[”"»'’]+$/g, "").trim();
+  const letras = t.replace(/[^A-Za-zÁÉÍÓÚÜÑáéíóúüñ]/g, "");
+  if (letras.length > 8 && letras === letras.toUpperCase()) {
+    t = t.toLowerCase();
+    t = t.charAt(0).toUpperCase() + t.slice(1);
+  }
+  return t;
 }

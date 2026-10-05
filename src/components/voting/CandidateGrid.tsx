@@ -66,7 +66,7 @@ export function CandidateGrid({ candidates, labels, votingOpen, closedMessage, o
           type="button"
           onClick={prev}
           aria-label="Anterior"
-          className="glass-pill absolute left-0 top-1/2 z-40 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white transition hover:bg-white/15 sm:flex"
+          className="border border-border bg-white/85 shadow-sm backdrop-blur absolute left-0 top-1/2 z-40 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-foreground transition hover:bg-white sm:flex"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
@@ -90,7 +90,7 @@ export function CandidateGrid({ candidates, labels, votingOpen, closedMessage, o
           type="button"
           onClick={next}
           aria-label="Siguiente"
-          className="glass-pill absolute right-0 top-1/2 z-40 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-white transition hover:bg-white/15 sm:flex"
+          className="border border-border bg-white/85 shadow-sm backdrop-blur absolute right-0 top-1/2 z-40 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-foreground transition hover:bg-white sm:flex"
         >
           <ChevronRight className="h-5 w-5" />
         </button>
@@ -101,7 +101,7 @@ export function CandidateGrid({ candidates, labels, votingOpen, closedMessage, o
           type="button"
           onClick={prev}
           aria-label="Anterior"
-          className="glass-pill flex h-10 w-10 items-center justify-center rounded-full text-white sm:hidden"
+          className="border border-border bg-white/85 shadow-sm backdrop-blur flex h-10 w-10 items-center justify-center rounded-full text-foreground sm:hidden"
         >
           <ChevronLeft className="h-4 w-4" />
         </button>
@@ -122,7 +122,7 @@ export function CandidateGrid({ candidates, labels, votingOpen, closedMessage, o
           type="button"
           onClick={next}
           aria-label="Siguiente"
-          className="glass-pill flex h-10 w-10 items-center justify-center rounded-full text-white sm:hidden"
+          className="border border-border bg-white/85 shadow-sm backdrop-blur flex h-10 w-10 items-center justify-center rounded-full text-foreground sm:hidden"
         >
           <ChevronRight className="h-4 w-4" />
         </button>
