@@ -118,7 +118,29 @@ export async function fetchElection(): Promise<ElectionConfig> {
   };
 }
 
-let cache: ElectionConfig | null = null;
+// ── Caché del lado del navegador (stale-while-revalidate) ──
+// La primera visita espera al servidor; las siguientes pintan al instante lo guardado
+// y actualizan en segundo plano. Se lee en un efecto (no en el render) para no romper la hidratación SSR.
+const STORAGE_KEY = "votacion:config:v1";
+
+function readStored(): ElectionConfig | null {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? (JSON.parse(raw) as ElectionConfig) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStored(cfg: ElectionConfig) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(cfg));
+  } catch {
+    /* almacenamiento bloqueado: se ignora */
+  }
+}
+
+let memory: ElectionConfig | null = null;
 
 export function useElection() {
   const [data, setData] = useState<ElectionConfig | null>(null);
@@ -126,14 +148,18 @@ export function useElection() {
 
   useEffect(() => {
     let alive = true;
-    if (cache) setData(cache);
+    const inicial = memory ?? readStored();
+    if (inicial) setData(inicial);
+
     fetchElection()
       .then((d) => {
-        cache = d;
+        memory = d;
+        writeStored(d);
         if (alive) setData(d);
       })
       .catch((e) => {
-        if (alive && !cache) setError(e instanceof Error ? e.message : "Error al cargar la votación.");
+        // Si ya hay datos guardados se sigue mostrando eso en vez de un error.
+        if (alive && !inicial) setError(e instanceof Error ? e.message : "Error al cargar la votación.");
       });
     return () => {
       alive = false;
