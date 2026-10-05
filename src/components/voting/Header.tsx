@@ -17,16 +17,14 @@ export function Header({ entidad, showResults = false }: HeaderProps) {
   return (
     <header className="shrink-0 px-4 pt-4 sm:px-6 sm:pt-6">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3">
-        <div className="glass-pill flex shrink-0 items-center gap-2 rounded-full py-1.5 pl-1.5 pr-3 shadow-elegant sm:pr-4">
+        {/* El logo es horizontal (escudo + texto): se muestra completo sobre una píldora blanca, sin recortarlo en círculo. */}
+        <div className="flex shrink-0 items-center rounded-full bg-white px-3 py-1.5 shadow-elegant sm:px-4 sm:py-2">
           <img
             src={logoAsset}
-            alt={entidad ?? "Logo"}
-            className="h-8 w-8 shrink-0 rounded-full bg-white/10 object-cover sm:h-9 sm:w-9"
+            alt={entidad ?? "Gobernación del Valle del Cauca"}
+            className="h-8 w-auto sm:h-11"
             loading="eager"
           />
-          {entidad && (
-            <span className="hidden text-xs font-semibold leading-tight text-white/85 sm:block">{entidad}</span>
-          )}
         </div>
 
         <nav className="glass-pill flex shrink-0 items-center gap-1 rounded-full p-1 shadow-elegant sm:gap-1.5 sm:p-1.5">
