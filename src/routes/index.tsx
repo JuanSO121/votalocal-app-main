@@ -1,6 +1,6 @@
 // routes/index.tsx — VotingPage (adaptable: todo viene de useElection)
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Footer, Header } from "@/components/voting/Header";
 import { CandidateGrid } from "@/components/voting/CandidateGrid";
 import { ThankYou } from "@/components/voting/ThankYou";
@@ -25,10 +25,6 @@ function VotingPage() {
 
   const win = useMemo(() => (eleccion ? buildWindow(eleccion) : null), [eleccion]);
 
-  // El título de la pestaña toma el nombre real de la elección (viene del Sheet).
-  useEffect(() => {
-    if (eleccion) document.title = `${eleccion.titulo} | ${eleccion.entidad}`;
-  }, [eleccion]);
   const { phase, revealed } = useResultsReveal(win);
   const votingOpen = phase === "open";
   const closedMessage = phase === "before" ? "La votación aún no ha iniciado" : "La votación ha finalizado";

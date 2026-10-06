@@ -1,6 +1,6 @@
 // routes/resultados.tsx
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { Lock, RefreshCw } from "lucide-react";
 import { Footer, Header } from "@/components/voting/Header";
 import { ResultsPodium } from "@/components/voting/ResultsPodium";
@@ -21,9 +21,6 @@ function ResultsPage() {
   const eleccion = data?.eleccion;
   const win = useMemo(() => (eleccion ? buildWindow(eleccion) : null), [eleccion]);
 
-  useEffect(() => {
-    if (eleccion) document.title = `Resultados · ${eleccion.titulo} | ${eleccion.entidad}`;
-  }, [eleccion]);
   const { phase, revealed, countdown } = useResultsReveal(win);
   const isClosed = phase === "closed";
 
